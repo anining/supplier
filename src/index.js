@@ -1,13 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import 'antd/dist/antd.less'
+import 'ant-design-pro/dist/ant-design-pro.css';
+import './styles/modify.css'
+import './styles/row.css'
+import './styles/index.css'
+import Router from '../src/router/Router';
 import * as serviceWorker from './serviceWorker';
+import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <Router />
+  </BrowserRouter>,
   document.getElementById('root')
 );
 
