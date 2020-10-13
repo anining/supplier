@@ -1,360 +1,151 @@
-import React, { useState, useEffect } from 'react'
-import { Button, Menu, Dropdown, Table, message, Input, Space, Popconfirm } from 'antd'
-import c from '../../styles/view.module.css'
-import { DownOutlined } from '@ant-design/icons';
-import good23 from '../../icons/good/good23.png'
-import good24 from '../../icons/good/good24.png'
-import good7 from '../../icons/good/good7.png'
-import good9 from '../../icons/good/good9.png'
-import { h } from '../../utils/history'
-import good41 from '../../icons/good/good41.png'
-// import { users } from "../../utils/api";
+import React, { useState } from 'react'
+import { Button, Modal, Switch } from 'antd'
+import auth5 from '../../icons/auth/auth5.png'
+import auth8 from '../../icons/auth/auth8.png'
+import header1 from '../../icons/header/header1.png'
+import c from '../../styles/user.module.css'
 
 function UserView () {
   const [visible, setVisible] = useState(false)
 
+  function handleOk () {
+
+  }
+
+  function handleCancel () {
+    setVisible(false)
+  }
+
+  function onChange () {
+
+  }
+
   return (
-    <div className="container">
+    <div className="view">
       <div className={c.container}>
         <div className={c.header}>
           <div className={c.headerL}>
-            <HeaderItem />
-          </div>
-          <Button icon={
-            <img src={good7} alt="" style={{width:16,marginRight:6}} />
-          }
-          type = "primary"
-          size = "small"
-          onClick={()=>{
-            const history = h.get()
-            history.push("/main/addUser")
-          }}
-          className = {c.headerAddBtn}>添加用户</Button>
-        </div>
-        <RTable setVisible={setVisible} />
-      </div>
-    </div>
-  )
-}
-
-function RTable ({ setVisible }) {
-  const [selectionType, setSelectionType] = useState('checkbox');
-  const [data, setData] = useState([])
-  const [current, setCurrent] = useState(1)
-  const [pageSize] = useState(10)
-  const [total, setTotal] = useState(0)
-  const [account, setAccount] = useState()
-  const [status, setStatus] = useState("placeholder")
-
-  useEffect(() => {
-    get(current)
-  }, [])
-
-  function get (current) {
-    // users(current, pageSize, account, status === "placeholder" ? undefined : status).then(r => {
-    //   if (!r.error) {
-    //     const { data, total } = r
-    //     setTotal(total)
-    //     setData(format(data))
-    //   }
-    // })
-  }
-
-  function format (arr) {
-    arr.forEach((item, index) => {
-      item.key = index
-    })
-    return arr
-  }
-
-  function onChange (page, pageSize) {
-    setCurrent(page)
-    get(page)
-  }
-
-  const obj = {
-    placeholder: {
-      color: '#2C68FF',
-      text: '请选择用户状态'
-    },
-    normal: {
-      color: '#2C68FF',
-      text: '正常',
-    },
-    banned: {
-      color: '#FF4D4F',
-      text: '封禁',
-    }
-  }
-  const columns = [
-    {
-      title: '用户ID',
-      dataIndex: 'id',
-      align: 'center',
-  },
-    {
-      title: '用户账号',
-      dataIndex: 'account',
-      align: 'center',
-  },
-    {
-      title: '消费总额',
-      align: 'center',
-      dataIndex: 'consumed',
-      sorter: {
-        compare: (a, b) => {
-          console.log(a, b)
-        },
-        multiple: 1,
-      },
-  },
-    {
-      title: '用户余额',
-      dataIndex: 'balance',
-      align: 'center',
-      sorter: {
-        compare: (a, b) => {
-          console.log(a, b)
-        },
-        multiple: 2,
-      },
-  },
-    {
-      title: '下单次数',
-      dataIndex: 'ordered',
-      align: 'center',
-  },
-    {
-      title: '注册时间',
-      align: 'center',
-      dataIndex: 'created_at',
-      sorter: {
-        compare: (a, b) => {
-          console.log(a, b)
-        },
-        multiple: 3,
-      },
-  },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      align: 'center',
-      render: (text, record, index) => {
-        const { color, text: t } = obj[text]
-        return <div style={{color}}>{t}</div>
-      }
-  },
-    {
-      title: '操作',
-      align: 'center',
-      render: (text, record, index) => (
-        <Space size="small" style={{color:'#2C68FF'}}>
-            <Popconfirm icon={()=><img src="" alt="" style={{width:0,height:0}}/>
-              }
-              placement = "left"
-              title = {
-                  () => {
-                    return (
-                      <div style={styles.view}>
-                        <div style={styles.header}>
-                          <img src={good41} alt="" style={styles.icon}/>
-                          <div>请输入您要修改成多少的余额</div>
-                        </div>
-                        <Input style={styles.input} placeholder="请在这里修改余额"/>
-                        <div style={styles.footer}>
-                          <Button size="small" style={styles.cancelBtn}>取消</Button>
-                          <Button size="small" type="primary" style={styles.okBtn}>确定</Button>
-                        </div>
-                      </div>
-                    )
-                  }
-                } >
-              <div style={{textDecoration:"underline",textDecorationColor:'#2C68FF'}} onClick={()=>{
-                // const history = h.get()
-                // history.push("/main/editCommunityGood")
-              }}>修改余额</div>
-            </Popconfirm>
-          <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-          <div style={{textDecoration:"underline",textDecorationColor:'#2C68FF'}} onClick={()=>{
-            const history = h.get()
-            history.push("/main/editUserPrice",record)
-          }}>修改密价</div>
-        </Space>
-      )
-    },
-  ];
-
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: record => ({
-      // disabled: record.name === 'Disabled User',
-      // Column configuration not to be checked
-      // name: record.name,
-    }),
-  };
-
-  function handleMenuClick (e) {
-    message.info('Click on menu item.');
-    console.log('click', e);
-  }
-
-  function handleStatusClick (e) {
-    setStatus(e.key)
-  }
-
-  function reset () {
-    setAccount(undefined)
-    setStatus("placeholder")
-  }
-
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="normal">
-        正常
-      </Menu.Item>
-      <Menu.Item key="banned">
-        封禁
-      </Menu.Item>
-    </Menu>
-  );
-
-  const status_menu = (
-    <Menu onClick={handleStatusClick}>
-      <Menu.Item key="normal">
-        正常
-      </Menu.Item>
-      <Menu.Item key="banned">
-        封禁
-      </Menu.Item>
-    </Menu>
-  );
-
-  return (
-    <div className={c.main} style={{marginBottom:24}}>
-        <div className={c.searchView}>
-          <div className={c.search}>
-            <div className={c.searchL} style={{width:'25.369%'}}>
-              <Input placeholder="请输入用户名" onChange={e=>setAccount(e.target.value)} value={account} size="small" className={c.searchInput} style={{width:'45.145%'}}/>
-              <Dropdown overlay={status_menu}>
-                <Button size="small" className={c.dropdownBtn} style={{width:'45.145%'}}>
-                  <div className={c.hiddenText}>
-                    {obj[status].text}
-                  </div>
-                  <DownOutlined />
-                </Button>
-              </Dropdown>
-            </div>
-            <div className={c.searchR}>
-              <Button size="small" className={c.resetBtn} onClick={reset}>重置</Button>
-              <Button icon={
-                <img src={good9} alt="" style={{width:14,marginRight:6}} />
-                }
-                type = "primary"
-                onClick={()=>get(current)}
-                size = "small"
-                className={c.searchBtn}>搜索用户</Button>
+            <img src={header1} alt="" />
+            <div>
+              <div className={c.tips}>欢迎您，想喝冰阔泺，祝您开心每一天！</div>
+              <div className={c.msg}>上次登录时间：<span>2021.01.01 01:15:23</span></div>
+              <div className={c.msg}>上次登录地点：<span>127.0.0.1(重庆市 重庆)</span></div>
             </div>
           </div>
-      </div>
-      <div className={c.actionView}>
-        <Dropdown overlay={menu}>
-          <Button size="small" className={c.actionBtn}>
-            <div className={c.hiddenText}>
-              批量操作
+          <div className={c.headerR}>
+            <div className={c.headerSec}>
+              <div>供应商ID：</div>
+              <div className={c.id}>12345</div>
             </div>
-            <DownOutlined />
-          </Button>
-        </Dropdown>
-        <Button className={c.action} onClick={()=>setVisible(true)} size="small">执行操作</Button>
-      </div>
-      <Table columns={columns} rowSelection={{
-        type: selectionType,
-        ...rowSelection
-      }} dataSource={data} size="small" pagination={{
-          showQuickJumper:true,
-          current,
-          pageSize,
-          hideOnSinglePage: false,
-          showLessItems: true,
-          total,
-          onChange
-        }}
-      />
-    </div>
-  )
-}
-
-function HeaderItem () {
-  const views = [];
-  const data = [
-    {
-      label: '用户总数',
-      number: '10,100',
-      icon: good23,
-      id: 111,
-    },
-    {
-      label: '今日新增',
-      number: '10,111',
-      icon: good24,
-      id: 222,
-    },
-  ]
-
-  data.forEach((item, index) => {
-    const { label, number, icon, id } = item;
-    views.push(
-      <div className={c.headerItem} key={id}>
-        <img src={icon} alt="" className={c.headerItemImg} />
-        <div className={c.headerIR} style={{borderRightWidth:index<data.length-1?1:0}}>
-          <div className={c.headerNumber}>{number}</div>
-          <div className={c.headerLabel}>{label}</div>
+            <div className={c.headerSec}>
+              <div>供应商密钥：</div>
+              <Button type="primary" className={c.btn}>复制密钥</Button>
+            </div>
+            <div className={c.headerSec}>
+              <div>API文档：</div>
+              <Button type="primary" className={c.btn}>查看文档</Button>
+            </div>
+          </div>
+        </div>
+        <div className={c.main}>
+          <div className={c.moneySection}>
+            <div className={c.moneyView}>
+              <div className={c.balance}>
+                <div>1342.1255</div>
+                <div>待结算</div>
+              </div>
+              <div className={c.line} />
+              <div className={c.balance}>
+                <div>1342.1255</div>
+                <div>冻结中</div>
+              </div>
+            </div>
+            <Button className={c.submitBtn} type="primary">申请结算</Button>
+          </div>
+          <div className={c.balanceTipsView}>
+            <div className={c.closeTipsView}>
+              <img src={auth5} alt="" />
+              <div>待结算：可以向商户申请打款结算的数额。</div>
+            </div>
+            <div className={c.freeze}>冻结中：订单还在售后时间内，不可结算的数额。当订单超过售后时间，订单对应的数额将会从冻结中转入待结算。</div>
+          </div>
+          <div className={c.statusView}>
+            <div>供货状态:</div>
+            <Switch className={c.switch} onChange={onChange} />
+            <div>当前状态：</div>
+            <div>正常供货</div>
+          </div>
+          <div className={c.closeTipsView}>
+            <img src={auth5} alt="" />
+            <div>正常供货：商户可以下单。关闭供货：商户无法可以下单。</div>
+          </div>
         </div>
       </div>
-    )
-  })
-
-  return views
+      <Modal
+        visible={visible}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <img src={auth8} alt="" style={styles.img} />
+          <div style={styles.title}>请确认是否结算？</div>
+          <div style={styles.text}>XXX社区申请结算金额：<span style={styles.balance}>12341.12</span>元</div>
+          <div style={styles.tips}>请和商户协商后填写，由商户在线下打款给您。</div>
+          <div>
+            <Button style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  )
 }
 
 const styles = {
   view: {
-    width: 340,
-  },
-  input: {
-    height: 32,
-    width: "100%",
-    marginTop: 29,
-    marginBottom: 72
-  },
-  header: {
-    marginTop: 18,
-    color: 'rgba(0, 0, 0, 0.65)',
     display: 'flex',
-    alignItems: 'center'
-  },
-  footer: {
-    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
-  icon: {
-    width: 14,
-    marginRight: 9,
+  img: {
+    width: 104
   },
-  cancelBtn: {
-    height: 24,
-    width: 58,
-    color: 'rgba(0, 0, 0, 0.65)',
+  title: {
+    fontWeight: 500,
+    marginTop: 32,
+    marginBottom: 22,
+    color: '#353535',
+    fontSize: '1.285rem'
+  },
+  tips: {
+    color: '#FF6A02',
+    fontSize: '0.857rem',
+    marginBottom: 31,
+    marginTop: 6,
+  },
+  text: {
+    color: '#3C3D3C',
+    fontSize: '0.857rem',
+  },
+  balance: {
+    color: '#FF7600',
+    fontSize: '1.142rem'
   },
   okBtn: {
-    marginLeft: 19,
-    height: 24,
-    width: 58,
-    background: '#1890FF'
+    height: 40,
+    width: 170,
+    color: '#333',
+    marginLeft: 70
   },
+  cancelBtn: {
+    height: 40,
+    width: 170,
+    background: '#BDBDBD',
+    color: '#fff',
+  }
 }
 
 export default UserView

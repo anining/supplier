@@ -12,36 +12,43 @@
 }
 
 #root .ant-table {
-  color: #000;
+  color: #595959;
+}
+
+.ant-menu-item:hover, .ant-menu-item-active, .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open, .ant-menu-submenu-active, .ant-menu-submenu-title:hover {
+  color: #333;
 }
 
 #root .ant-table-small .ant-table-thead > tr > th {
-  background-color: #F1F5FF;
-  color: #000;
+  background-color: #777;
+  height: 54px;
+  color: #fff;
   font-weight: 500;
 }
 
-/* #root .ant-table.ant-table-small { */
-/*   font-size: 12px; */
-/*   color: #000; */
-/*   font-weight: 400; */
-/* } */
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: #FFF9E9;
+}
 
-/* #root .ant-dropdown-trigger span { */
-/*   color: #979BA3; */
-/* } */
+.ant-menu-item-selected {
+  color: #333;
+}
 
-/* #root .ant-dropdown-open span { */
-/*   color: #2C67FF; */
-/* } */
+.ant-menu {
+  color: #666;
+}
+
+.ant-menu-vertical .ant-menu-item::after, .ant-menu-vertical-left .ant-menu-item::after, .ant-menu-vertical-right .ant-menu-item::after, .ant-menu-inline .ant-menu-item::after {
+  border-right-color: #FFCB31;
+}
 
 .ant-dropdown .ant-dropdown-menu-item :hover, #root .ant-dropdown .ant-dropdown-menu-submenu-title :hover {
   background-color: #F0F5FF;
   color: #2C68FF;
 }
 
-.ql-toolbar.ql-snow {
-  overflow-x: auto;
+td.ant-table-column-sort {
+  background-color: transparent;
 }
 
 .ant-transfer-list {
@@ -77,4 +84,52 @@
   color: #FF8D30;
   font-size: 0.857rem;
   box-shadow: 0 3px 6px -4px #98B6FF, 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ant-popover-inner-content {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ql-toolbar.ql-snow {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 2px 2px 0 0;
+}
+
+.ql-container.ql-snow {
+  border-radius: 0 0 2px 2px;
+}
+
+.ql-toolbar.ql-snow, .ql-container.ql-snow {
+  border-color: #d9d9d9;
+}
+
+.ql-editor {
+  min-height: 200px;
+}
+
+.ant-table-row-level-0 .ant-table-cell {
+  height: 63px;
+}
+
+.ant-table-tbody > tr.ant-table-row:hover > td {
+  background-color: #FFFAF3;
+}
+
+.ant-table-tbody > tr.ant-table-row-selected > td {
+  background-color: #FFF7E0;
+}
+
+.ant-breadcrumb .ant-breadcrumb-link span {
+  color: rgba(0, 0, 0, 0.45);
+  transition: color 0.3s;
+  touch-action: manipulation;
+  background-color:transparent;
+  outline:none;
+  cursor: pointer;
+}
+
+.ant-breadcrumb .ant-breadcrumb-link span:hover {
+  color: #548aff;
 }

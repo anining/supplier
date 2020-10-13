@@ -1,0 +1,212 @@
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main {
+  width: 100%;
+  height: 658px;
+  padding: 24px;
+  background-color: #fff;
+  margin-top: 24px;
+  border-radius: 2px;
+}
+
+.moneySection {
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.moneyView {
+  height: 100%;
+  width: 62.561%;
+  padding: 0 23px;
+  background: #F6F9FF;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+}
+
+.submitBtn {
+  height: 40px;
+  width: 120px;
+  color: #333333;
+  font-size: 1.142rem;
+  background: #FFCB31;
+  margin-right: 37px;
+}
+
+.balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 0.857rem;
+  color: #34374A;
+}
+
+.balance div:first-child {
+  font-size: 1.785rem;
+  font-weight: 500;
+  line-height: 36px;
+}
+
+.line {
+  width: 2px;
+  margin: 0 12.204%;
+  height: 50px;
+  background: #D9E9FF;
+}
+
+.balanceTipsView {
+  color: #FF8D30;
+  height: 116px;
+  padding-top: 17px;
+  border-bottom: 1px solid #E1E1E1;
+}
+
+.freeze {
+  padding-left: 23px;
+  margin-top: 4px;
+}
+
+.closeTipsView img {
+  width: 16px;
+  margin-right: 7px;
+}
+
+.closeTipsView {
+  display: flex;
+  color: #FF8D30;
+  align-items: center;
+}
+
+.statusView {
+  width: 62.561%;
+  height: 82px;
+  font-size: 0.857rem;
+  color: #333333;
+  background: #FFFAF4;
+  margin-top: 24px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  padding-left: 23px;
+  margin-bottom: 17px;
+}
+
+.switch {
+  width: 44px;
+  height: 22px;
+  margin: 0 6px 0 5.905%;
+}
+
+.statusView div:first-child {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.statusView div:nth-child(3) {
+  color: #999;
+}
+
+.statusView div:last-child {
+  color: #FF8D30;
+}
+
+.headerSec {
+  height: 33.333%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerSec div:first-child {
+  width: 29.541%;
+  height: 33.333%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 1.142rem;
+  font-weight: 500;
+  color: #333333;
+}
+
+.id {
+  color: #333333;
+  margin-right: 10.825%;
+  width: 93px;
+  height: 32px;
+  text-align: center;
+  line-height: 32px;
+}
+
+.btn {
+  width: 93px;
+  height: 32px;
+  color: #333;
+  margin-right: 10.825%;
+}
+
+.headerR {
+  height: 100%;
+  flex: 1;
+  background-color: #fff;
+  border-radius: 2px;
+  background-image: url(../icons/auth//auth7.png);
+  background-position: right bottom ;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.headerL {
+  height: 100%;
+  width: 65.968%;
+  margin-right: 24px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background-image: url(../icons/auth//auth6.png);
+  background-position: right;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+}
+
+.headerL img {
+  width: 72px;
+  height: 72px;
+  background: #FFF4D5;
+  border-radius: 36px;
+  margin: 0 20px 0 24px;
+}
+
+.tips {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 28px;
+  font-size: 1.428rem;
+  margin-bottom: 6px;
+}
+
+.msg {
+  line-height: 22px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.msg span {
+  color: #34374A;
+}

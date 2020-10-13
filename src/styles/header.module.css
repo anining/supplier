@@ -1,15 +1,41 @@
 .container {
-  padding: 0;
   height: 60px;
   background-color: #fff;
   position: fixed;
   z-index: 10;
   width: 100%;
+  padding: 0;
   display: flex;
-  padding-right: 200px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.containerLeft {
+  height: 100%;
+  padding-left: 15px;
+  width: 200px;
+}
+
+.containerRight {
+  height: 100%;
+  width: calc(100% - 200px);
+  display: flex;
+  padding-right: 24px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 4px 1px 4px 0px rgba(0, 21, 41, 0.12);
+}
+
+.containerR {
+  height: 100%;
+  width: 100%;
+  display: flex;
   align-items: center;
   justify-content: flex-end;
-  color: #000;
+}
+
+.container::-webkit-scrollbar, .siderLayout::-webkit-scrollbar {
+    display: none;
+     -ms-overflow-style: none;
 }
 
 .avatar {
@@ -22,12 +48,13 @@
   display: flex;
   align-items: center;
   margin-left: 12px;
-  margin-right: 25px;
+  box-shadow: none;
+  color: rgba(0, 0, 0, 0.65);
 }
 
 .down {
   margin-left: 8px;
-  width: 16px;
+  width: 14px;
 }
 
 .logoutBtn {
@@ -36,4 +63,12 @@
 
 .item:hover {
   background-color: #EEF4FE;
+}
+
+.siderLayout {
+  overflow-y: auto;
+  height: calc(100vh - 60px);
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
