@@ -220,3 +220,18 @@
   text-overflow: ellipsis;
   line-height: 46px;
 }
+
+.itemSelect {
+  display: flex;
+  align-items: center;
+}
+
+.itemSelectP {
+  width: 256px;
+  height: 34px;
+}
+
+.addonAfter {
+  padding: 0 9px;
+  cursor: pointer;
+}

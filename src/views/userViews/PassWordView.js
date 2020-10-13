@@ -44,7 +44,7 @@ function PassWordView () {
           <Breadcrumb.Item>修改密码</Breadcrumb.Item>
         </Breadcrumb>
       </div>
-      <div className={c.main}>
+      <div className={c.main} style={{paddingTop:48}}>
         <div className={c.item}>
           <div className={c.itemName}>
             <span className={c.white}>*</span>

@@ -1,54 +1,127 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Table, Input } from 'antd'
-import good1 from '../../icons/good/good1.png'
+import styles from '../../styles/modal'
+import { Button, DatePicker, Modal, Table, Input } from 'antd'
+import good13 from '../../icons/good/good13.png'
 import c from '../../styles/view.module.css'
-import good2 from '../../icons/good/good2.png'
-import good3 from '../../icons/good/good3.png'
-import good4 from '../../icons/good/good4.png'
+import good21 from '../../icons/good/good21.png'
+import good11 from '../../icons/good/good11.png'
+import good23 from '../../icons/good/good23.png'
 import good9 from '../../icons/good/good9.png'
+import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
-import { push, getKey, saveSuccess } from "../../utils/util"
+import { push, saveSuccess } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
 import { communityGoods } from "../../utils/api"
-import SelectComponent from "../../components/SelectComponent"
 
 let win
 
 function CapitalFlowView () {
+  const [visible, setVisible] = useState(false)
+  const [visibleRemark, setVisibleRemark] = useState(false)
   const [data] = useState([
     {
-      label: '商品总数',
+      label: '待结算',
       number: '10,100',
-      icon: good3,
+      icon: good11,
       id: 111,
     },
     {
-      label: '已上架数',
+      label: '冻结中',
       number: '10,111',
-      icon: good1,
+      icon: good13,
       id: 222,
     },
     {
-      label: '已下架数',
+      label: '下单总额',
       number: '10,111',
-      icon: good2,
+      icon: good21,
       id: 333,
     },
     {
-      label: '关闭下单',
+      label: '退单总额',
       number: '10,111',
-      icon: good4,
+      icon: good23,
       id: 444,
     },
   ])
 
+  function handleOk () {
+
+  }
+
+  function handleCancel () {
+    setVisible(false)
+  }
+
   return (
     <div className="view">
       <div className={c.container}>
-        <TableHeaderComponent path="/main/editCommunityGood" data={data} text="添加商品"/>
+        <TableHeaderComponent data={data}/>
         <RTable />
       </div>
-    </div>
+      <Modal
+        visible={visibleRemark}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <div style={styles.label}>
+            <img src={auth12} alt="" style={styles.inputImg} />
+            添加备注
+          </div>
+          <div style={{marginBottom:11}}>
+            <div style={styles.refundSelect}>
+              <div>添加备注：</div>
+              <div onClick={()=>{
+
+              }} className={c.itemSelect}>
+                <Input className={c.itemSelectP} placeholder="请在这里输入备注内容"/>
+              </div>
+            </div>
+            <div style={{color:"#3C3D3C"}}>当前退款商品：<span style={{color:"#ff7600"}}>音符点赞 飞速 (202001051010)</span></div>
+          </div>
+          <div>
+            <Button style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        visible={visible}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <div style={styles.label}>
+            <img src={auth12} alt="" style={styles.inputImg} />
+            退款
+          </div>
+          <div style={{marginBottom:11}}>
+            <div style={styles.refundSelect}>
+              <div>退款数量：</div>
+              <div onClick={()=>{
+
+              }} className={c.itemSelect}>
+                <Input className={c.itemSelectP} addonAfter={
+                  <div className={c.addonAfter} onClick={()=>alert((1))}>
+                    全部数量
+                  </div>
+                } placeholder="请在这里输入退款数量"/>
+              </div>
+            </div>
+            <div style={{color:"#3C3D3C"}}>当前退款商品：<span style={{color:"#ff7600"}}>音符点赞 飞速 (202001051010)</span></div>
+          </div>
+          <div>
+            <Button style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div> <
+    /Modal> < /
+    div >
   )
 }
 
@@ -58,6 +131,8 @@ function RTable () {
   const [current, setCurrent] = useState(1)
   const [pageSize] = useState(10)
   const [total, setTotal] = useState(0)
+  const [date, setDate] = useState([])
+  const [moment, setMoment] = useState()
 
   const [id, setId] = useState()
   const [search_name, setSearch_name] = useState()
@@ -79,6 +154,11 @@ function RTable () {
   useEffect(() => {
     get(current)
   }, [])
+
+  function dateChange (data, dataString) {
+    setDate([new Date(dataString[0]).toISOString(), new Date(dataString[1]).toISOString()])
+    setMoment(data)
+  }
 
   function get (current) {
     let body = { page: current, size: pageSize }
@@ -132,6 +212,14 @@ function RTable () {
     get(page)
   }
 
+  function onConfirm () {
+
+  }
+
+  function onCancel () {
+
+  }
+
   const rowSelection = {
     onChange: (selectedRowKeys, rows) => {
       setSelectRows(selectedRowKeys)
@@ -167,21 +255,31 @@ function RTable () {
 
   const obj = {
     available: {
-      color: "#2C68FF",
-      text: '已上架',
+      color: "#FFFF5F5F",
+      text: '-',
     },
     unavailable: {
-      color: "#FF8D30",
-      text: '已关闭订单',
+      color: "#FF61BD60",
+      text: '+',
     },
-    paused: {
-      color: "#FF4D4F",
-      text: '已下架',
+  }
+  const obj3 = {
+    available: {
+      color: "#FFFF7600",
+      text: '结算',
+    },
+    unavailable: {
+      color: "#FF458BFF",
+      text: '下单',
+    },
+    unavailable1: {
+      color: "#FFFF5F5F",
+      text: '退款',
     },
   }
   const columns = [
     {
-      title: '商品编号',
+      title: '订单编号',
       dataIndex: 'id',
       align: 'center',
   },
@@ -191,103 +289,44 @@ function RTable () {
       align: 'center',
   },
     {
-      title: '商品分类',
-      align: 'center',
-      dataIndex: 'category_name',
-  },
-    {
-      title: '下单模型',
-      dataIndex: 'param_template_name',
-      align: 'center',
-  },
-    {
-      title: '进价',
-      dataIndex: 'unit_cost',
-      align: 'center',
-      render: (text, record, index) => {
-        return '-'
-      }
-      // sorter: {
-      //   compare: (a, b) => {
-      //     console.log(a, b)
-      //   },
-      //   multiple: 1,
-      // }
-  },
-    {
-      title: '售价',
-      dataIndex: 'unit_price',
-      align: 'center',
-      // sorter: {
-      //   compare: (a, b) => {
-      //     console.log(a, b)
-      //   },
-      //   multiple: 1,
-      // }
-  },
-    {
-      title: '密价',
+      title: '资金类型',
       align: 'center',
       dataIndex: 'disc_price',
       render: (text, record, index) => {
         return '-'
       }
-      // sorter: {
-      //   compare: (a, b) => {
-      //     console.log(a, b)
-      //   },
-      //   multiple: 1,
-      // }
   },
     {
-      title: '单位',
-      dataIndex: 'unit',
+      title: '订单数额',
       align: 'center',
-  },
-    {
-      title: '下单限制',
-      align: 'center',
-      dataIndex: 'text',
+      dataIndex: 'disc_price',
       render: (text, record, index) => {
-        const { repeat_order, batch_order } = record
-        const repeat = repeat_order > 0 ? { text: "开启", color: "#52C41A" } : { text: "关闭", color: "#C8C8C8" }
-        const batch = batch_order > 0 ? { text: "开启", color: "#52C41A" } : { text: "关闭", color: "#C8C8C8" }
-        return (
-          <div>
-            <div>批量下单: <span style={{color:repeat.color}}>{repeat.text}</span></div>
-            <div>重复下单: <span style={{color:batch.color}}>{batch.text}</span></div>
-          </div>
-        )
+        return '-'
       }
   },
     {
-      title: '状态',
+      title: '下单时间',
       align: 'center',
-      dataIndex: 'status',
+      dataIndex: 'disc_price',
       render: (text, record, index) => {
-        const { text: t, color } = getKey(text, obj)
-        return <div style={{color}}>{t}</div>
+        return '-'
       }
-  },
-    {
-      title: '操作',
-      align: 'center',
-      render: (text, record, index) => (
-        <div className={c.clickText} onClick={()=>push('/main/editCommunityGood',record)}>编辑商品</div>
-      )
-    },
-  ];
+},
+];
 
   return (
     <div className={c.main}>
       <div className={c.searchView}>
         <div className={c.search}>
           <div className={c.searchL}>
-            <Input value={id} onPressEnter={()=>get(current)} onChange={e=>setId(e.target.value)} placeholder="请输入商品编号" size="small" className={c.searchInput}/>
+            <Input value={id} onPressEnter={()=>get(current)} onChange={e=>setId(e.target.value)} placeholder="请输入订单编号" size="small" className={c.searchInput}/>
             <Input value={search_name} onPressEnter={()=>get(current)} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
-            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择商品状态" style={{width:186}}/>
-            <DropdownComponent keys={[{name:"可退单",key:"refundable"},{name:"不可退单",key:"no_refundable"},{name:"全部",key:"un_refundable"}]} action={refundable} setAction={setRefundable} placeholder="请选择是否可退单" style={{width:186}}/>
-            <SelectComponent placeholder="请选择商品分类" id={community_goods_category_id} name={community_goods_category_name} click={click}/>
+            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择资金类型" style={{width:186}}/>
+            <DatePicker.RangePicker
+              format="YYYY-MM-DD"
+              onChange={dateChange}
+              value={moment}
+              className={c.dataPicker}/>
           </div>
           <div className={c.searchR}>
             <Button size="small" onClick={reset} className={c.resetBtn}>重置</Button>
@@ -298,11 +337,10 @@ function RTable () {
               size = "small"
               loading={loading}
               onClick={()=>get(current)}
-              className={c.searchBtn}>搜索商品</Button>
+              className={c.searchBtn}>搜索记录</Button>
             </div>
         </div>
       </div>
-      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[{name:"批量上架",key:"available"},{name:"批量关闭",key:"unavailable"},{name:"批量下架",key:"paused"}]}/>
       <Table
         columns={columns}
         rowSelection={{

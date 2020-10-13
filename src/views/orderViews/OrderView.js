@@ -1,54 +1,127 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Table, Input } from 'antd'
-import good1 from '../../icons/good/good1.png'
+import styles from '../../styles/modal'
+import { Button, Popconfirm, Space, DatePicker, Modal, Table, Input } from 'antd'
+import good10 from '../../icons/good/good10.png'
 import c from '../../styles/view.module.css'
-import good2 from '../../icons/good/good2.png'
-import good3 from '../../icons/good/good3.png'
-import good4 from '../../icons/good/good4.png'
+import good11 from '../../icons/good/good11.png'
+import good12 from '../../icons/good/good12.png'
+import good13 from '../../icons/good/good13.png'
 import good9 from '../../icons/good/good9.png'
+import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
-import { push, getKey, saveSuccess } from "../../utils/util"
+import { push, saveSuccess } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
 import { communityGoods } from "../../utils/api"
-import SelectComponent from "../../components/SelectComponent"
 
 let win
 
 function OrderView () {
+  const [visible, setVisible] = useState(false)
+  const [visibleRemark, setVisibleRemark] = useState(false)
   const [data] = useState([
     {
-      label: '商品总数',
+      label: '订单总数',
       number: '10,100',
-      icon: good3,
+      icon: good12,
       id: 111,
     },
     {
-      label: '已上架数',
+      label: '退款中',
       number: '10,111',
-      icon: good1,
+      icon: good10,
       id: 222,
     },
     {
-      label: '已下架数',
+      label: '待结算',
       number: '10,111',
-      icon: good2,
+      icon: good11,
       id: 333,
     },
     {
-      label: '关闭下单',
+      label: '冻结中',
       number: '10,111',
-      icon: good4,
+      icon: good13,
       id: 444,
     },
   ])
 
+  function handleOk () {
+
+  }
+
+  function handleCancel () {
+    setVisible(false)
+  }
+
   return (
     <div className="view">
       <div className={c.container}>
-        <TableHeaderComponent path="/main/editCommunityGood" data={data} text="添加商品"/>
+        <TableHeaderComponent data={data}/>
         <RTable />
       </div>
-    </div>
+      <Modal
+        visible={visibleRemark}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <div style={styles.label}>
+            <img src={auth12} alt="" style={styles.inputImg} />
+            添加备注
+          </div>
+          <div style={{marginBottom:11}}>
+            <div style={styles.refundSelect}>
+              <div>添加备注：</div>
+              <div onClick={()=>{
+
+              }} className={c.itemSelect}>
+                <Input className={c.itemSelectP} placeholder="请在这里输入备注内容"/>
+              </div>
+            </div>
+            <div style={{color:"#3C3D3C"}}>当前退款商品：<span style={{color:"#ff7600"}}>音符点赞 飞速 (202001051010)</span></div>
+          </div>
+          <div>
+            <Button style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        visible={visible}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <div style={styles.label}>
+            <img src={auth12} alt="" style={styles.inputImg} />
+            退款
+          </div>
+          <div style={{marginBottom:11}}>
+            <div style={styles.refundSelect}>
+              <div>退款数量：</div>
+              <div onClick={()=>{
+
+              }} className={c.itemSelect}>
+                <Input className={c.itemSelectP} addonAfter={
+                  <div className={c.addonAfter} onClick={()=>alert((1))}>
+                    全部数量
+                  </div>
+                } placeholder="请在这里输入退款数量"/>
+              </div>
+            </div>
+            <div style={{color:"#3C3D3C"}}>当前退款商品：<span style={{color:"#ff7600"}}>音符点赞 飞速 (202001051010)</span></div>
+          </div>
+          <div>
+            <Button style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div> <
+    /Modal> < /
+    div >
   )
 }
 
@@ -58,6 +131,8 @@ function RTable () {
   const [current, setCurrent] = useState(1)
   const [pageSize] = useState(10)
   const [total, setTotal] = useState(0)
+  const [date, setDate] = useState([])
+  const [moment, setMoment] = useState()
 
   const [id, setId] = useState()
   const [search_name, setSearch_name] = useState()
@@ -79,6 +154,11 @@ function RTable () {
   useEffect(() => {
     get(current)
   }, [])
+
+  function dateChange (data, dataString) {
+    setDate([new Date(dataString[0]).toISOString(), new Date(dataString[1]).toISOString()])
+    setMoment(data)
+  }
 
   function get (current) {
     let body = { page: current, size: pageSize }
@@ -132,6 +212,14 @@ function RTable () {
     get(page)
   }
 
+  function onConfirm () {
+
+  }
+
+  function onCancel () {
+
+  }
+
   const rowSelection = {
     onChange: (selectedRowKeys, rows) => {
       setSelectRows(selectedRowKeys)
@@ -167,127 +255,201 @@ function RTable () {
 
   const obj = {
     available: {
-      color: "#2C68FF",
-      text: '已上架',
+      color: "rgba(0, 0, 0, 0.65)",
+      text: '查看详情',
     },
     unavailable: {
-      color: "#FF8D30",
-      text: '已关闭订单',
+      color: "#FFCB31",
+      text: '查看详情',
     },
-    paused: {
-      color: "#FF4D4F",
-      text: '已下架',
+  }
+  const obj1 = {
+    available: {
+      color: "#FF5F5F",
+      text: '已终止',
+    },
+    unavailable: {
+      color: "#61BD60",
+      text: '已完成',
+    },
+    unavailable1: {
+      color: "#458BFF",
+      text: '进行中',
+    },
+    unavailable2: {
+      color: "#FF7600",
+      text: '待处理',
+    },
+  }
+  const obj2 = {
+    available: {
+      color: "#FF458BFF",
+      text: '退款中',
+    },
+    unavailable: {
+      color: "#FF61BD60",
+      text: '已退款',
+    },
+    unavailable1: {
+      color: "rgba(0, 0, 0, 0.65)",
+      text: '-',
+    },
+  }
+  const obj3 = {
+    available: {
+      color: "#FFFF7803",
+      text: '待结算 ',
+    },
+    unavailable: {
+      color: "#FF61BD60",
+      text: '已结算',
+    },
+    unavailable1: {
+      color: "#FFFF4D4F",
+      text: '冻结中',
     },
   }
   const columns = [
-    {
-      title: '商品编号',
-      dataIndex: 'id',
-      align: 'center',
+      {
+        title: '订单编号',
+        dataIndex: 'id',
+        align: 'center',
   },
-    {
-      title: '商品名称',
-      dataIndex: 'name',
-      align: 'center',
+      {
+        title: '商品名称',
+        dataIndex: 'name',
+        align: 'center',
   },
-    {
-      title: '商品分类',
-      align: 'center',
-      dataIndex: 'category_name',
+      {
+        title: '下单数量',
+        align: 'center',
+        dataIndex: 'disc_price',
+        render: (text, record, index) => {
+          return '-'
+        }
   },
-    {
-      title: '下单模型',
-      dataIndex: 'param_template_name',
-      align: 'center',
+      {
+        title: '订单数量',
+        align: 'center',
+        dataIndex: 'disc_price',
+        render: (text, record, index) => {
+          return '-'
+        }
   },
-    {
-      title: '进价',
-      dataIndex: 'unit_cost',
-      align: 'center',
-      render: (text, record, index) => {
-        return '-'
+      {
+        title: '下单信息',
+        align: 'center',
+        dataIndex: 'disc_price',
+        render: (text, record, index) => {
+          return (
+            <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
+          }
+          placement = "leftTop"
+          title = {
+              () => {
+                return (
+                  <div style={styles.popView}>
+                    <div style={styles.popTitle}>下单信息：</div>
+                    <div style={styles.popText}>下单链接：<span style={styles.popSpan}>https://www.baidu.com/s/u</span></div>
+                    <div style={styles.popText}>备&#12288;&#12288;注：<span style={styles.popSpan}>围绕主题评论</span></div>
+                </div>
+                )
+              }
+            } >
+            <div>查看详情</div> <
+            /Popconfirm>
+        )
       }
-      // sorter: {
-      //   compare: (a, b) => {
-      //     console.log(a, b)
-      //   },
-      //   multiple: 1,
-      // }
-  },
+    },
     {
-      title: '售价',
-      dataIndex: 'unit_price',
-      align: 'center',
-      // sorter: {
-      //   compare: (a, b) => {
-      //     console.log(a, b)
-      //   },
-      //   multiple: 1,
-      // }
-  },
-    {
-      title: '密价',
+      title: '扩展信息',
       align: 'center',
       dataIndex: 'disc_price',
       render: (text, record, index) => {
-        return '-'
-      }
-      // sorter: {
-      //   compare: (a, b) => {
-      //     console.log(a, b)
-      //   },
-      //   multiple: 1,
-      // }
-  },
-    {
-      title: '单位',
-      dataIndex: 'unit',
-      align: 'center',
-  },
-    {
-      title: '下单限制',
-      align: 'center',
-      dataIndex: 'text',
-      render: (text, record, index) => {
-        const { repeat_order, batch_order } = record
-        const repeat = repeat_order > 0 ? { text: "开启", color: "#52C41A" } : { text: "关闭", color: "#C8C8C8" }
-        const batch = batch_order > 0 ? { text: "开启", color: "#52C41A" } : { text: "关闭", color: "#C8C8C8" }
         return (
-          <div>
-            <div>批量下单: <span style={{color:repeat.color}}>{repeat.text}</span></div>
-            <div>重复下单: <span style={{color:batch.color}}>{batch.text}</span></div>
-          </div>
-        )
-      }
-  },
-    {
-      title: '状态',
-      align: 'center',
-      dataIndex: 'status',
-      render: (text, record, index) => {
-        const { text: t, color } = getKey(text, obj)
-        return <div style={{color}}>{t}</div>
-      }
-  },
-    {
-      title: '操作',
-      align: 'center',
-      render: (text, record, index) => (
-        <div className={c.clickText} onClick={()=>push('/main/editCommunityGood',record)}>编辑商品</div>
+          <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
+        }
+        placement = "leftTop"
+        title = {
+            () => {
+              return (
+                <div style={styles.popView}>
+                  <div style={styles.popTitle}>扩展信息：</div>
+                  <div style={styles.popText}>初始量：<span style={styles.popSpan}>1.234W</span></div>
+                  <div style={styles.popText}>当前量：<span style={styles.popSpan}>1.234W</span></div>
+              </div>
+              )
+            }
+          } >
+          <div>查看详情</div> <
+          /Popconfirm>
       )
-    },
-  ];
+    }
+}, {
+  title: '订单状态',
+  align: 'center',
+  dataIndex: 'disc_price',
+  render: (text, record, index) => {
+    return '-'
+  }
+}, {
+  title: '售后状态',
+  align: 'center',
+  dataIndex: 'disc_price',
+  render: (text, record, index) => {
+    return '-'
+  }
+}, {
+  title: '结算状态',
+  align: 'center',
+  dataIndex: 'disc_price',
+  render: (text, record, index) => {
+    return '-'
+  }
+}, {
+  title: '订单历程',
+  align: 'center',
+  dataIndex: 'disc_price',
+  render: (text, record, index) => {
+    return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
+  }
+}, {
+  title: '下单时间',
+  align: 'center',
+  dataIndex: 'disc_price',
+  render: (text, record, index) => {
+    return '-'
+  }
+}, {
+  title: '操作',
+  align: 'center',
+  render: (text, record, index) => (
+    <Space size="small">
+            <div className={c.clickText}>修改状态</div>
+            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+            <div style={{cursor:'wait'}} className={c.clickText}>退款</div>
+            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+            <div style={{cursor:'wait'}} className={c.clickText}>加备注</div>
+        </Space>
+  )
+},
+];
 
-  return (
-    <div className={c.main}>
+return (
+  <div className={c.main}>
       <div className={c.searchView}>
         <div className={c.search}>
           <div className={c.searchL}>
-            <Input value={id} onPressEnter={()=>get(current)} onChange={e=>setId(e.target.value)} placeholder="请输入商品编号" size="small" className={c.searchInput}/>
+            <Input value={id} onPressEnter={()=>get(current)} onChange={e=>setId(e.target.value)} placeholder="请输入订单编号" size="small" className={c.searchInput}/>
             <Input value={search_name} onPressEnter={()=>get(current)} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
-            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择商品状态" style={{width:186}}/>
-            <DropdownComponent keys={[{name:"可退单",key:"refundable"},{name:"不可退单",key:"no_refundable"},{name:"全部",key:"un_refundable"}]} action={refundable} setAction={setRefundable} placeholder="请选择是否可退单" style={{width:186}}/>
-            <SelectComponent placeholder="请选择商品分类" id={community_goods_category_id} name={community_goods_category_name} click={click}/>
+            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择订单状态" style={{width:186}}/>
+            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择售后状态" style={{width:186}}/>
+            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择结算状态" style={{width:186}}/>
+            <DatePicker.RangePicker
+              format="YYYY-MM-DD"
+              onChange={dateChange}
+              value={moment}
+              className={c.dataPicker}/>
           </div>
           <div className={c.searchR}>
             <Button size="small" onClick={reset} className={c.resetBtn}>重置</Button>
@@ -298,7 +460,7 @@ function RTable () {
               size = "small"
               loading={loading}
               onClick={()=>get(current)}
-              className={c.searchBtn}>搜索商品</Button>
+              className={c.searchBtn}>搜索</Button>
             </div>
         </div>
       </div>
@@ -320,7 +482,7 @@ function RTable () {
         }}
       />
     </div>
-  )
+)
 }
 
 export default OrderView

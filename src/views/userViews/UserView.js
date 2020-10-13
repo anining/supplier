@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Modal, Switch } from 'antd'
+import styles from '../../styles/modal'
 import auth5 from '../../icons/auth/auth5.png'
 import auth8 from '../../icons/auth/auth8.png'
 import header1 from '../../icons/header/header1.png'
@@ -101,51 +102,6 @@ function UserView () {
       </Modal>
     </div>
   )
-}
-
-const styles = {
-  view: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  img: {
-    width: 104
-  },
-  title: {
-    fontWeight: 500,
-    marginTop: 32,
-    marginBottom: 22,
-    color: '#353535',
-    fontSize: '1.285rem'
-  },
-  tips: {
-    color: '#FF6A02',
-    fontSize: '0.857rem',
-    marginBottom: 31,
-    marginTop: 6,
-  },
-  text: {
-    color: '#3C3D3C',
-    fontSize: '0.857rem',
-  },
-  balance: {
-    color: '#FF7600',
-    fontSize: '1.142rem'
-  },
-  okBtn: {
-    height: 40,
-    width: 170,
-    color: '#333',
-    marginLeft: 70
-  },
-  cancelBtn: {
-    height: 40,
-    width: 170,
-    background: '#BDBDBD',
-    color: '#fff',
-  }
 }
 
 export default UserView

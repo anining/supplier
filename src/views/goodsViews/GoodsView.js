@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Table, Input } from 'antd'
+import styles from '../../styles/modal'
+import { Button, Modal, Table, Input } from 'antd'
 import good1 from '../../icons/good/good1.png'
 import c from '../../styles/view.module.css'
 import good2 from '../../icons/good/good2.png'
 import good3 from '../../icons/good/good3.png'
 import good4 from '../../icons/good/good4.png'
 import good9 from '../../icons/good/good9.png'
+import auth10 from '../../icons/auth/auth10.png'
+import auth11 from '../../icons/auth/auth11.png'
+import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
 import { push, saveSuccess } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
@@ -14,6 +18,9 @@ import { communityGoods } from "../../utils/api"
 let win
 
 function GoodsView () {
+  const [visible, setVisible] = useState(false)
+  const [visibleOrder, setVisibleOrder] = useState(false)
+  const [visibleBalance, setVisibleBalance] = useState(false)
   const [data] = useState([
     {
       label: '供货商品数',
@@ -41,12 +48,75 @@ function GoodsView () {
     },
   ])
 
+  function handleOk () {
+
+  }
+
+  function handleCancel () {
+    setVisible(false)
+  }
+
   return (
     <div className="view">
       <div className={c.container}>
         <TableHeaderComponent path="/main/edit-goods" data={data} text="新增"/>
         <RTable />
       </div>
+      <Modal
+        visible={visible}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <img src={auth10} alt="" style={styles.img} />
+          <div style={styles.title}>您正在进行危险操作！</div>
+          <div style={styles.text}>删除商品后，商户无法下单该商品！</div>
+          <div style={styles.text}>请确认是否删除<span style={styles.balance}>音符点赞 飞速 (998)</span></div>
+          <div>
+            <Button style={styles.cancelBtn}>立即删除</Button>
+            <Button type="primary" style={styles.okBtn}>不要删除</Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        visible={visibleOrder}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <img src={auth11} alt="" style={styles.img} />
+          <div style={styles.title}>您正在进行危险操作！</div>
+          <div style={styles.text}>您选中了<span style={styles.balance}>5</span>个商品，确定要关闭下单吗？</div>
+          <div style={styles.tips}>关闭下单之后，商户无法下单。请确认后操作。</div>
+          <div>
+            <Button style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        visible={visibleBalance}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <div style={styles.label}>
+            <img src={auth12} alt="" style={styles.inputImg} />
+            用户余额修改
+          </div>
+          <div style={styles.inputView}>修改余额：<Input placeholder="请在这里修改余额" style={styles.input}/></div>
+          <div>
+            <Button style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
@@ -194,11 +264,6 @@ function RTable () {
       title: '商品名称',
       dataIndex: 'name',
       align: 'center',
-  },
-    {
-      title: '商品分类',
-      align: 'center',
-      dataIndex: 'category_name',
   },
     {
       title: '单价',

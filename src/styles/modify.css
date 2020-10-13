@@ -133,3 +133,13 @@ td.ant-table-column-sort {
 .ant-breadcrumb .ant-breadcrumb-link span:hover {
   color: #548aff;
 }
+
+.ant-radio-wrapper-checked {
+  color: #FFC415!important;
+}
+
+.ant-input-group-addon {
+  padding: 0;
+  background-color:#fff;
+  color: #FFC415;
+}

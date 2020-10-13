@@ -24,7 +24,6 @@
   background-color: #fff;
   padding-left: 48px;
   padding-right: 24px;
-  padding-top: 48px;
   padding-bottom: 32px;
   border-radius: 2px;
 }
@@ -32,7 +31,7 @@
 .tips {
   color: #FF5730;
   font-size: 0.857rem;
-  margin: 32px 0 0 0;
+  margin: 40px 0 0 0;
 }
 
 .item {
@@ -87,7 +86,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 16px 0 12px;
-  color: #2C68FF;
+  color: #FFC415;
   border-radius: 2px;
   border: 1px solid #D9D9D9;
   cursor: pointer;
@@ -136,15 +135,23 @@
   color: rgba(0, 0, 0, 0.25);
 }
 
-.itemName .white {
-  color: #fff;
+.closeTimeView {
+  display: flex;
+  flex-direction: column;
 }
 
-.tableView {
-  width: 29.25%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.closeTime {
+  color: #979BA3;
+}
+
+.closeTimeI {
+  width: 68px;
+  height: 24px;
+  margin: 20px 8px 0 8px;
+}
+
+.itemName .white {
+  color: #fff;
 }
 
 .viewTable {
@@ -230,7 +237,6 @@
 
 .submit {
   width: 68.376%;
-  font-size: 1.142rem;
   height: 40px;
   color: #333333;
   font-size: 1.142rem;
@@ -251,7 +257,7 @@
 }
 
 .saveBtn {
-  color: #4177FE;
+  color: #FFC415;
   font-size: 0.857rem;
   cursor: pointer;
 }
@@ -443,9 +449,9 @@
 }
 
 .orderM {
-  width: 80.5%;
+  margin-top: 24px;
+  width: calc(100% - 100px);
   min-height: 100px;
-  background-color: #F9F9F9;
 }
 
 .orderMH {
@@ -457,8 +463,8 @@
   color: #34374A;
   font-weight: 500;
   font-size: 1.142rem;
-  border-bottom: 1px solid #D8D8D8;
-  margin-bottom: 30px;
+  margin-bottom: 27px;
+  background-color: #F9F9F9;
 }
 
 .orderLine {
