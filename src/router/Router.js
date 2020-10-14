@@ -6,6 +6,7 @@ import { proxyRouter } from "../utils/history"
 import { storage } from '../utils/storage'
 import { setter, getter } from '../utils/store'
 import { push } from '../utils/util'
+import SelectOrderModelView from "../views/goodsViews/SelectOrderModelView"
 
 function Router () {
   proxyRouter(useHistory(), '/login')
@@ -29,6 +30,9 @@ function Router () {
       </Route>
       <Route path="/main">
         <MainComponent />
+      </Route>
+      <Route path="/select-order-model">
+        <SelectOrderModelView />
       </Route>
       <Route path="/login">
         <LoginView />

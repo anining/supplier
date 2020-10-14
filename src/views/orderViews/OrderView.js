@@ -11,9 +11,7 @@ import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
 import { push, saveSuccess } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
-import { communityGoods } from "../../utils/api"
-
-let win
+import { orders } from "../../utils/api"
 
 function OrderView () {
   const [visible, setVisible] = useState(false)
@@ -133,23 +131,12 @@ function RTable () {
   const [total, setTotal] = useState(0)
   const [date, setDate] = useState([])
   const [moment, setMoment] = useState()
-
-  const [id, setId] = useState()
-  const [search_name, setSearch_name] = useState()
-  const [community_goods_category_id, setCommunity_goods_category_id] = useState()
-  const [community_goods_category_name, setCommunity_goods_category_name] = useState()
+  const [order_id, setOrder_id] = useState()
+  const [goods_name, setGoods_name] = useState()
   const [status, setStatus] = useState()
-  const [refundable, setRefundable] = useState()
-  const [order_by, setOrder_by] = useState()
-  const [ordering, setOrdering] = useState()
+  const [refund_status, setRefund_status] = useState()
   const [loading, setLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
-
-  window.localClick = function (type, ids) {
-    setCommunity_goods_category_id(ids.id)
-    setCommunity_goods_category_name(ids.name)
-    win && win.close()
-  }
 
   useEffect(() => {
     get(current)
@@ -162,29 +149,23 @@ function RTable () {
 
   function get (current) {
     let body = { page: current, size: pageSize }
-    if (id) {
-      body = { ...body, ...{ id } }
+    if (order_id) {
+      body = { ...body, ...{ order_id } }
     }
-    if (search_name) {
-      body = { ...body, ...{ search_name } }
-    }
-    if (community_goods_category_id) {
-      body = { ...body, ...{ community_goods_category_id } }
+    if (goods_name) {
+      body = { ...body, ...{ goods_name } }
     }
     if (status) {
       body = { ...body, ...{ status } }
     }
-    if (refundable === "refundable" || refundable === "no_refundable") {
-      body = { ...body, ...{ refundable: refundable === "refundable" } }
+    if (refund_status) {
+      body = { ...body, ...{ refund_status } }
     }
-    // if (order_by) {
-    //   body = { ...body, ...{ order_by } }
-    // }
-    // if (ordering) {
-    //   body = { ...body, ...{ ordering } }
-    // }
+    if (date.length) {
+      body = { ...body, ...{ start_from: date[0], end_with: date[1] } }
+    }
     setLoading(true)
-    communityGoods("get", undefined, body).then(r => {
+    orders("get", undefined, body).then(r => {
       setLoading(false)
       if (!r.error) {
         const { data, total } = r
@@ -201,10 +182,6 @@ function RTable () {
       item.key = index
     })
     return arr
-  }
-
-  function click () {
-    win = window.open("/select-good-category", "_blank", "left=390,top=145,width=1200,height=700")
   }
 
   function onChange (page, pageSize) {
@@ -231,7 +208,7 @@ function RTable () {
     setActionLoading(true)
     const params = new URLSearchParams()
     selectedRows.forEach(i => params.append("ids", data[i].id))
-    communityGoods("modifys", undefined, params.toString(), { status: key }).then(r => {
+    orders("modifys", undefined, params.toString(), { status: key }).then(r => {
       setActionLoading(false)
       if (!r.error) {
         saveSuccess(false)
@@ -244,13 +221,12 @@ function RTable () {
   }
 
   function reset () {
-    setId(undefined)
-    setSearch_name(undefined)
-    setCommunity_goods_category_name(undefined)
-    setCommunity_goods_category_id(undefined)
+    setOrder_id(undefined)
+    setGoods_name(undefined)
     setStatus(undefined)
-    setRefundable(undefined)
-    setOrder_by(undefined)
+    setRefund_status(undefined)
+    setMoment(undefined)
+    setDate([])
   }
 
   const obj = {
@@ -264,19 +240,19 @@ function RTable () {
     },
   }
   const obj1 = {
-    available: {
+    closed: {
       color: "#FF5F5F",
       text: '已终止',
     },
-    unavailable: {
+    completed: {
       color: "#61BD60",
       text: '已完成',
     },
-    unavailable1: {
+    processing: {
       color: "#458BFF",
       text: '进行中',
     },
-    unavailable2: {
+    pending: {
       color: "#FF7600",
       text: '待处理',
     },
@@ -310,141 +286,141 @@ function RTable () {
     },
   }
   const columns = [
-      {
-        title: '订单编号',
-        dataIndex: 'id',
-        align: 'center',
+    {
+      title: '订单编号',
+      dataIndex: 'id',
+      align: 'center',
   },
-      {
-        title: '商品名称',
-        dataIndex: 'name',
-        align: 'center',
+    {
+      title: '商品名称',
+      dataIndex: 'name',
+      align: 'center',
   },
-      {
-        title: '下单数量',
-        align: 'center',
-        dataIndex: 'disc_price',
-        render: (text, record, index) => {
-          return '-'
-        }
-  },
-      {
-        title: '订单数量',
-        align: 'center',
-        dataIndex: 'disc_price',
-        render: (text, record, index) => {
-          return '-'
-        }
-  },
-      {
-        title: '下单信息',
-        align: 'center',
-        dataIndex: 'disc_price',
-        render: (text, record, index) => {
-          return (
-            <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
-          }
-          placement = "leftTop"
-          title = {
-              () => {
-                return (
-                  <div style={styles.popView}>
-                    <div style={styles.popTitle}>下单信息：</div>
-                    <div style={styles.popText}>下单链接：<span style={styles.popSpan}>https://www.baidu.com/s/u</span></div>
-                    <div style={styles.popText}>备&#12288;&#12288;注：<span style={styles.popSpan}>围绕主题评论</span></div>
-                </div>
-                )
-              }
-            } >
-            <div>查看详情</div> <
-            /Popconfirm>
-        )
+    {
+      title: '下单数量',
+      align: 'center',
+      dataIndex: 'disc_price',
+      render: (text, record, index) => {
+        return '-'
       }
+  },
+    {
+      title: '订单数量',
+      align: 'center',
+      dataIndex: 'disc_price',
+      render: (text, record, index) => {
+        return '-'
+      }
+  },
+    {
+      title: '下单信息',
+      align: 'center',
+      dataIndex: 'disc_price',
+      // render: (text, record, index) => {
+      //   return (
+      //     <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
+      //   }
+      //   placement = "leftTop"
+      //   title = {
+      //       () => {
+      //         return (
+      //           <div style={styles.popView}>
+      //             <div style={styles.popTitle}>下单信息：</div>
+      //             <div style={styles.popText}>下单链接：<span style={styles.popSpan}>https://www.baidu.com/s/u</span></div>
+      //             <div style={styles.popText}>备&#12288;&#12288;注：<span style={styles.popSpan}>围绕主题评论</span></div>
+      //         </div>
+      //         )
+      //       }
+      //     } >
+      //     <div>查看详情</div> <
+      //     /Popconfirm>
+      // )
+      // }
     },
     {
       title: '扩展信息',
       align: 'center',
       dataIndex: 'disc_price',
+      // render: (text, record, index) => {
+      //   return (
+      //     <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
+      //   }
+      //   placement = "leftTop"
+      //   title = {
+      //       () => {
+      //         return (
+      //           <div style={styles.popView}>
+      //             <div style={styles.popTitle}>扩展信息：</div>
+      //             <div style={styles.popText}>初始量：<span style={styles.popSpan}>1.234W</span></div>
+      //             <div style={styles.popText}>当前量：<span style={styles.popSpan}>1.234W</span></div>
+      //         </div>
+      //         )
+      //       }
+      //     } >
+      //     <div>查看详情</div> <
+      //     /Popconfirm>
+      // )
+      // }
+}, {
+      title: '订单状态',
+      align: 'center',
+      dataIndex: 'disc_price',
       render: (text, record, index) => {
-        return (
-          <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
-        }
-        placement = "leftTop"
-        title = {
-            () => {
-              return (
-                <div style={styles.popView}>
-                  <div style={styles.popTitle}>扩展信息：</div>
-                  <div style={styles.popText}>初始量：<span style={styles.popSpan}>1.234W</span></div>
-                  <div style={styles.popText}>当前量：<span style={styles.popSpan}>1.234W</span></div>
-              </div>
-              )
-            }
-          } >
-          <div>查看详情</div> <
-          /Popconfirm>
+        return '-'
+      }
+}, {
+      title: '售后状态',
+      align: 'center',
+      dataIndex: 'disc_price',
+      render: (text, record, index) => {
+        return '-'
+      }
+}, {
+      title: '结算状态',
+      align: 'center',
+      dataIndex: 'disc_price',
+      render: (text, record, index) => {
+        return '-'
+      }
+}, {
+      title: '订单历程',
+      align: 'center',
+      dataIndex: 'disc_price',
+      // render: (text, record, index) => {
+      //   return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
+      // }
+}, {
+      title: '下单时间',
+      align: 'center',
+      dataIndex: 'disc_price',
+      render: (text, record, index) => {
+        return '-'
+      }
+}, {
+      title: '操作',
+      align: 'center',
+      render: (text, record, index) => (
+        <Space size="small">
+      <div style={{cursor:'wait'}} className={c.clickText}>修改状态</div>
+      <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+      <div style={{cursor:'wait'}} className={c.clickText}>退款</div>
+      <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+      <div style={{cursor:'wait'}} className={c.clickText}>加备注</div>
+    </Space>
       )
-    }
-}, {
-  title: '订单状态',
-  align: 'center',
-  dataIndex: 'disc_price',
-  render: (text, record, index) => {
-    return '-'
-  }
-}, {
-  title: '售后状态',
-  align: 'center',
-  dataIndex: 'disc_price',
-  render: (text, record, index) => {
-    return '-'
-  }
-}, {
-  title: '结算状态',
-  align: 'center',
-  dataIndex: 'disc_price',
-  render: (text, record, index) => {
-    return '-'
-  }
-}, {
-  title: '订单历程',
-  align: 'center',
-  dataIndex: 'disc_price',
-  render: (text, record, index) => {
-    return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
-  }
-}, {
-  title: '下单时间',
-  align: 'center',
-  dataIndex: 'disc_price',
-  render: (text, record, index) => {
-    return '-'
-  }
-}, {
-  title: '操作',
-  align: 'center',
-  render: (text, record, index) => (
-    <Space size="small">
-            <div className={c.clickText}>修改状态</div>
-            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-            <div style={{cursor:'wait'}} className={c.clickText}>退款</div>
-            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-            <div style={{cursor:'wait'}} className={c.clickText}>加备注</div>
-        </Space>
-  )
 },
 ];
 
-return (
-  <div className={c.main}>
+  return (
+    <div className={c.main}>
       <div className={c.searchView}>
         <div className={c.search}>
           <div className={c.searchL}>
-            <Input value={id} onPressEnter={()=>get(current)} onChange={e=>setId(e.target.value)} placeholder="请输入订单编号" size="small" className={c.searchInput}/>
-            <Input value={search_name} onPressEnter={()=>get(current)} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
-            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择订单状态" style={{width:186}}/>
-            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择售后状态" style={{width:186}}/>
-            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择结算状态" style={{width:186}}/>
+            <Input value={order_id} onPressEnter={()=>get(current)} onChange={e=>setOrder_id(e.target.value)} placeholder="请输入订单编号" size="small" className={c.searchInput}/>
+            <Input value={goods_name} onPressEnter={()=>get(current)} onChange={e=>setGoods_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
+            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"待处理",key:"pending"},{name:"进行中",key:"processing"},{name:"已完成",key:"completed"},{name:"已终止",key:"closed"}]} placeholder="请选择订单状态" style={{width:186}}/>
+            <DropdownComponent action={refund_status} setAction={setRefund_status} keys={[{name:"已退款",key:"closed"},{name:"退款中",key:"refunding"}]} placeholder="请选择售后状态" style={{width:186}}/>
+            {/* <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择结算状态" style={{width:186}}/> */}
             <DatePicker.RangePicker
               format="YYYY-MM-DD"
               onChange={dateChange}
@@ -464,7 +440,7 @@ return (
             </div>
         </div>
       </div>
-      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[{name:"批量上架",key:"available"},{name:"批量关闭",key:"unavailable"},{name:"批量下架",key:"paused"}]}/>
+      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[{name:"批量设置已终止",key:"closed"},{name:"批量设置已完成",key:"completed"},{name:"批量设置进行中",key:"processing"},{name:"批量设置待处理",key:"pending"}]}/>
       <Table
         columns={columns}
         rowSelection={{
@@ -482,7 +458,7 @@ return (
         }}
       />
     </div>
-)
+  )
 }
 
 export default OrderView

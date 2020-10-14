@@ -11,11 +11,10 @@ import auth10 from '../../icons/auth/auth10.png'
 import auth11 from '../../icons/auth/auth11.png'
 import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
-import { push, saveSuccess } from "../../utils/util"
+import { push, getKey, getSimpleText } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
-import { communityGoods } from "../../utils/api"
+import { goods } from "../../utils/api"
 
-let win
 
 function GoodsView () {
   const [visible, setVisible] = useState(false)
@@ -128,22 +127,11 @@ function RTable () {
   const [pageSize] = useState(10)
   const [total, setTotal] = useState(0)
 
-  const [id, setId] = useState()
-  const [search_name, setSearch_name] = useState()
-  const [community_goods_category_id, setCommunity_goods_category_id] = useState()
-  const [community_goods_category_name, setCommunity_goods_category_name] = useState()
+  const [goods_id, setGoods_id] = useState()
+  const [goods_name, setGoods_name] = useState()
   const [status, setStatus] = useState()
-  const [refundable, setRefundable] = useState()
-  const [order_by, setOrder_by] = useState()
-  const [ordering, setOrdering] = useState()
   const [loading, setLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
-
-  window.localClick = function (type, ids) {
-    setCommunity_goods_category_id(ids.id)
-    setCommunity_goods_category_name(ids.name)
-    win && win.close()
-  }
 
   useEffect(() => {
     get(current)
@@ -151,29 +139,17 @@ function RTable () {
 
   function get (current) {
     let body = { page: current, size: pageSize }
-    if (id) {
-      body = { ...body, ...{ id } }
+    if (goods_id) {
+      body = { ...body, ...{ goods_id } }
     }
-    if (search_name) {
-      body = { ...body, ...{ search_name } }
-    }
-    if (community_goods_category_id) {
-      body = { ...body, ...{ community_goods_category_id } }
+    if (goods_name) {
+      body = { ...body, ...{ goods_name } }
     }
     if (status) {
       body = { ...body, ...{ status } }
     }
-    if (refundable === "refundable" || refundable === "no_refundable") {
-      body = { ...body, ...{ refundable: refundable === "refundable" } }
-    }
-    // if (order_by) {
-    //   body = { ...body, ...{ order_by } }
-    // }
-    // if (ordering) {
-    //   body = { ...body, ...{ ordering } }
-    // }
     setLoading(true)
-    communityGoods("get", undefined, body).then(r => {
+    goods("get", undefined, body).then(r => {
       setLoading(false)
       if (!r.error) {
         const { data, total } = r
@@ -192,10 +168,6 @@ function RTable () {
     return arr
   }
 
-  function click () {
-    win = window.open("/select-good-category", "_blank", "left=390,top=145,width=1200,height=700")
-  }
-
   function onChange (page, pageSize) {
     setCurrent(page)
     get(page)
@@ -209,42 +181,28 @@ function RTable () {
   };
 
   function submit (key) {
-    setActionLoading(true)
-    const params = new URLSearchParams()
-    selectedRows.forEach(i => params.append("ids", data[i].id))
-    communityGoods("modifys", undefined, params.toString(), { status: key }).then(r => {
-      setActionLoading(false)
-      if (!r.error) {
-        saveSuccess(false)
-        setSelectRows([])
-        get(current)
-      }
-    }).catch(() => {
-      setActionLoading(false)
-    })
+    // setActionLoading(true)
+    // const params = new URLSearchParams()
+    // selectedRows.forEach(i => params.append("ids", data[i].id))
+    // communityGoods("modifys", undefined, params.toString(), { status: key }).then(r => {
+    //   setActionLoading(false)
+    //   if (!r.error) {
+    //     saveSuccess(false)
+    //     setSelectRows([])
+    //     get(current)
+    //   }
+    // }).catch(() => {
+    //   setActionLoading(false)
+    // })
   }
 
   function reset () {
-    setId(undefined)
-    setSearch_name(undefined)
-    setCommunity_goods_category_name(undefined)
-    setCommunity_goods_category_id(undefined)
+    setGoods_id(undefined)
+    setGoods_name(undefined)
     setStatus(undefined)
-    setRefundable(undefined)
-    setOrder_by(undefined)
   }
 
   const obj = {
-    available: {
-      color: "#458BFF",
-      text: '正在供货',
-    },
-    unavailable: {
-      color: "#FF7600",
-      text: '待供货',
-    },
-  }
-  const obj1 = {
     available: {
       color: "#FF5F5F",
       text: '关闭下单',
@@ -267,7 +225,7 @@ function RTable () {
   },
     {
       title: '单价',
-      dataIndex: 'unit',
+      dataIndex: 'unit_price',
       align: 'center',
   },
     {
@@ -277,60 +235,53 @@ function RTable () {
   },
     {
       title: '退款时限',
-      dataIndex: 'param_template_name',
       align: 'center',
+      render: (text, record, index) => {
+        const { refund_type, refund_period } = record
+        if (refund_type) {
+          return `${refund_type==='after_started'?"下单":"完成"}${refund_period}日内`
+        }
+        return "不允许退款"
+      }
   },
     {
       title: '供货状态',
       align: 'center',
-      dataIndex: 'disc_price',
+      dataIndex: 'providing',
       render: (text, record, index) => {
-        return '-'
+        return <div style={{color:text?"#458BFF":"#FF7600"}}>{text?"正在供货":"待供货"}</div>
       }
   },
     {
       title: '最低下单',
       align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
+      dataIndex: 'min_order_amount',
   },
     {
       title: '最高下单',
       align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
+      dataIndex: 'max_order_amount',
   },
     {
       title: '重复下单',
       align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
+      dataIndex: 'repeat_order',
   },
     {
       title: '下单状态',
       align: 'center',
       dataIndex: 'status',
       render: (text, record, index) => {
-        return '-'
+        const { text: t, color } = getKey(text, obj)
+        return <div style={{color}}>{t}</div>
       }
-      // render: (text, record, index) => {
-      //   const { text: t, color } = getKey(text, obj)
-      //   return <div style={{color}}>{t}</div>
-      // }
   },
     {
       title: '商品说明',
       align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
+      width: 300,
+      dataIndex: 'introduction',
+      render: (text, record, index) => <div className={c.noticeHtml}>{getSimpleText(text)}</div>
   },
     {
       title: '操作',
@@ -346,10 +297,10 @@ function RTable () {
       <div className={c.searchView}>
         <div className={c.search}>
           <div className={c.searchL}>
-            <Input value={id} onPressEnter={()=>get(current)} onChange={e=>setId(e.target.value)} placeholder="请输入商品编号" size="small" className={c.searchInput}/>
-            <Input value={search_name} onPressEnter={()=>get(current)} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
+            <Input value={goods_id} onPressEnter={()=>get(current)} onChange={e=>setGoods_id(e.target.value)} placeholder="请输入商品编号" size="small" className={c.searchInput}/>
+            <Input value={goods_name} onPressEnter={()=>get(current)} onChange={e=>setGoods_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
             <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择供货状态" style={{width:186}}/>
-            <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择下单状态" style={{width:186}}/>
+            {/* <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择下单状态" style={{width:186}}/> */}
           </div>
           <div className={c.searchR}>
             <Button size="small" onClick={reset} className={c.resetBtn}>重置</Button>
@@ -364,7 +315,7 @@ function RTable () {
             </div>
         </div>
       </div>
-      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[{name:"批量上架",key:"available"},{name:"批量关闭",key:"unavailable"},{name:"批量下架",key:"paused"}]}/>
+      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[]}/>
       <Table
         columns={columns}
         rowSelection={{

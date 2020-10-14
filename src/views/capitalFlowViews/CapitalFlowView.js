@@ -11,7 +11,7 @@ import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
 import { push, saveSuccess } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
-import { communityGoods } from "../../utils/api"
+// import { communityGoods } from "../../utils/api"
 
 let win
 
@@ -184,16 +184,16 @@ function RTable () {
     //   body = { ...body, ...{ ordering } }
     // }
     setLoading(true)
-    communityGoods("get", undefined, body).then(r => {
-      setLoading(false)
-      if (!r.error) {
-        const { data, total } = r
-        setTotal(total)
-        setData(format(data))
-      }
-    }).catch(() => {
-      setLoading(false)
-    })
+    // communityGoods("get", undefined, body).then(r => {
+    //   setLoading(false)
+    //   if (!r.error) {
+    //     const { data, total } = r
+    //     setTotal(total)
+    //     setData(format(data))
+    //   }
+    // }).catch(() => {
+    //   setLoading(false)
+    // })
   }
 
   function format (arr) {
@@ -231,16 +231,16 @@ function RTable () {
     setActionLoading(true)
     const params = new URLSearchParams()
     selectedRows.forEach(i => params.append("ids", data[i].id))
-    communityGoods("modifys", undefined, params.toString(), { status: key }).then(r => {
-      setActionLoading(false)
-      if (!r.error) {
-        saveSuccess(false)
-        setSelectRows([])
-        get(current)
-      }
-    }).catch(() => {
-      setActionLoading(false)
-    })
+    // communityGoods("modifys", undefined, params.toString(), { status: key }).then(r => {
+    //   setActionLoading(false)
+    //   if (!r.error) {
+    //     saveSuccess(false)
+    //     setSelectRows([])
+    //     get(current)
+    //   }
+    // }).catch(() => {
+    //   setActionLoading(false)
+    // })
   }
 
   function reset () {

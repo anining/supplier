@@ -9,6 +9,8 @@ import CapitalFlowView from "../views/capitalFlowViews/CapitalFlowView"
 import PassWordView from "../views/userViews/PassWordView"
 import EditGoodsView from "../views/goodsViews/EditGoodsView"
 import OrderRecView from "../views/orderViews/OrderRecView"
+import OrderModelView from "../views/goodsViews/OrderModelView"
+import EditOrderModelView from "../views/goodsViews/EditOrderModelView"
 
 function ContentComponent () {
 
@@ -35,11 +37,17 @@ function ContentComponent () {
         <Route path="/main/order-recording">
           <OrderRecView />
         </Route>
-        <Route path="/main/goods-manage">
+        <Route path="/main/goods">
           <GoodsView />
         </Route>
         <Route path="/main/edit-goods">
           <EditGoodsView />
+        </Route>
+        <Route path="/main/order-model">
+          <OrderModelView />
+        </Route>
+        <Route path="/main/edit-order-model">
+          <EditOrderModelView />
         </Route>
         <Route path="/main/capital-flow">
           <CapitalFlowView />

@@ -4,10 +4,9 @@ import { Input, message, Button } from 'antd';
 import auth2 from '../../icons/auth/auth2.png'
 import auth3 from '../../icons/auth/auth3.png'
 import auth4 from '../../icons/auth/auth4.png'
-import { login, currentManager } from '../../utils/api'
+import { login } from '../../utils/api'
 import { setter } from '../../utils/store'
 import { push } from "../../utils/util";
-import { storage } from "../../utils/storage";
 
 function LoginView () {
   const [account, setAccount] = useState()
@@ -32,36 +31,17 @@ function LoginView () {
     }
     setLoading(true)
     const promise = login(account, password)
-    setter([["old_password", password]], true)
     setPassword(undefined)
     promise.then(r => {
       setLoading(false)
       const { error, data } = r;
       if (!error) {
-        const { access_token, disclaimer_agreed, role } = data;
-        setter([['authorization', `Bearer ${access_token}`], ['disclaimer_agreed', disclaimer_agreed], ['role', role]], true);
-        const permissions = storage.getItem("permissions");
-        if (permissions) {
-          setter([['permissions', permissions]]);
-          push('/main')
-          get(role)
-        } else {
-          get(role, true)
-        }
+        const { access_token } = data;
+        setter([['authorization', `Bearer ${access_token}`]], true);
+        push('/main')
       }
     }).catch(e => {
       setLoading(false)
-    })
-  }
-
-  function get (role, jump = false) {
-    currentManager().then(r => {
-      const { data, error } = r
-      if (!error) {
-        const { permissions, nickname } = data
-        setter([["nickname", nickname], ['permissions', role === "superuser" ? ["orderlog", "citecfg", "usermng", "capitalflow", "valueaddedsrv", "tagmng", "statistics", "subcitemng", "commbiz", "cardbiz"] : permissions]], true);
-        jump && push('/main')
-      }
     })
   }
 

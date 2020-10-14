@@ -12,6 +12,8 @@ import sider5 from '../icons/sider/sider5.png'
 import sider6 from '../icons/sider/sider6.png'
 import sider7 from '../icons/sider/sider7.png'
 import sider8 from '../icons/sider/sider8.png'
+import sider10 from '../icons/sider/sider10.png'
+import sider9 from '../icons/sider/sider9.png'
 import { getter, setter } from "../utils/store"
 import { push } from "../utils/util"
 
@@ -25,8 +27,20 @@ function SiderComponent ({ collapsed, toggle }) {
   }, [])
 
   function menuItemClick ({ item, key, keyPath, domEvent }) {
+    if (["user-manage", "order-manage", "password", "capital-flow"].includes(key)) {
+      setter([["openKeys", []]])
+    }
     setter([["selectedKeys", keyPath]])
     push(`/main/${key}`)
+  }
+
+  function onTitleClick ({ key, domEvent }) {
+    const localOpenKeys = openKeys.get()
+    if (localOpenKeys.length && localOpenKeys.includes(key)) {
+      setter([["openKeys", []]])
+    } else {
+      setter([["openKeys", [key]]])
+    }
   }
 
   function MyMenu () {
@@ -36,14 +50,18 @@ function SiderComponent ({ collapsed, toggle }) {
         <Menu.Item key="user-manage" icon={<Icon keys="user-manage" />}>
           用户管理
         </Menu.Item>
-        <Menu.Item key="goods-manage" icon={<Icon keys="goods-manage" />}>
-          商品管理
-        </Menu.Item>
+        <Menu.SubMenu onTitleClick={onTitleClick} key="goods" icon={<Icon keys="goods-manage" />} title="商品管理">
+          <Menu.Item key="goods">商品列表</Menu.Item>
+          <Menu.Item key="order-model">下单模型</Menu.Item>
+        </Menu.SubMenu>
         <Menu.Item key="order-manage" icon={<Icon keys="order-manage" />}>
           订单管理
         </Menu.Item>
         <Menu.Item key="capital-flow" icon={<Icon keys="capital-flow" />}>
           资金流水
+        </Menu.Item>
+        <Menu.Item key="password" icon={<Icon keys="password" />}>
+          修改密码
         </Menu.Item>
       </Menu>
     )
@@ -69,11 +87,15 @@ function Icon ({ keys }) {
     },
     "goods-manage": {
       icon: [sider3, sider4],
-      keys: ["goods-manage"]
+      keys: ["goods", "order-model"]
     },
     "capital-flow": {
       icon: [sider7, sider8],
       keys: ["capital-flow"]
+    },
+    "password": {
+      icon: [sider9, sider10],
+      keys: ["password"]
     },
   }
 

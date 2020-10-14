@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import c from '../../styles/edit.module.css'
-import { Input, Button, Radio, Breadcrumb } from 'antd'
+import { Input, Button, Radio, Breadcrumb, message } from 'antd'
 import ReactQuill from 'react-quill';
 import good5 from '../../icons/good/good5.png'
 import { goBack, saveSuccess, push } from "../../utils/util";
-import { communityGoods } from "../../utils/api";
+import { goods } from "../../utils/api";
 import { useHistory } from "react-router-dom";
 import { MODULES } from "../../utils/config";
 
@@ -12,163 +12,79 @@ let win
 
 function EditGoodsView () {
   const { state = {} } = useHistory().location
+  const { id, introduction: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n, providing, refund_type, refund_period, repeat_order: r_o, status: s = "available", unit: u, unit_price: u_p } = state
   const h = useHistory()
-  const { id, name: n, tags: tag_s = [], batch_order: b_o, category_name, weight: w, introduction: i_td = "", disc_price: d_p, pics: ps = [], max_order_amount: max_o_a, community_goods_category_id: c_id, community_param_template_id: t_id, min_order_amount: min_o_a, param_template_name, repeat_order: r_o, status: s = "available", unit: u, unit_cost: u_c, unit_price: u_p } = state
   const [name, setName] = useState(n)
-  const [status, setStatus] = useState(s)
-  const [pics, setPics] = useState(ps)
-  const [community_goods_category_id, setCommunity_goods_category_id] = useState(c_id)
-  const [community_param_template_id, setCommunity_param_template_id] = useState(t_id)
-  const [community_goods_category_name, setCommunity_goods_category_name] = useState(category_name)
-  const [community_param_template_name, setCommunity_param_template_name] = useState(param_template_name)
-  const [tag_ids, setTag_ids] = useState(tag_s.map(i => i.id))
-  const [tags, setTags] = useState(tag_s)
-  const [unit, setUnit] = useState(u)
+  const [value, setValue] = useState(refund_period)
   const [unit_price, setUnit_price] = useState(u_p)
-  const [refundable, setRefundable] = useState(true)
-  const [unit_cost, setUnit_cost] = useState(u_c)
-  const [disc_price, setDisc_price] = useState(d_p)
+  const [unit, setUnit] = useState(u)
+  const [status, setStatus] = useState(s)
+  const [provider_param_template_id, setProvider_param_template_id] = useState()
+  const [provider_param_template_name, setProvider_param_template_name] = useState()
+  const [loading, setLoading] = useState(false)
+  const [refund_method, setRefund_method] = useState(refund_type)
   const [min_order_amount, setMin_order_amount] = useState(min_o_a)
   const [max_order_amount, setMax_order_amount] = useState(max_o_a)
   const [repeat_order, setRepeat_order] = useState(r_o)
-  const [batch_order, setBatch_order] = useState(b_o)
-  const [weight, setWeight] = useState(w)
-  const [introduction, setIntroduction] = useState(i_td)
-  const [imageUrl, setImageUrl] = useState(pics[0])
-  const [loading, setLoading] = useState(false)
-  const [recommended, setRecommended] = useState(false)
+  const [introduction, setIntroduction] = useState(i)
 
-  // window.localClick = function (type, ids) {
-  //   switch (type) {
-  //     case 'tables':
-  //       setTags(ids)
-  //       setTag_ids(ids.map(i => i.id))
-  //       break
-  //     case 'good_category_id':
-  //       setCommunity_goods_category_id(ids.id)
-  //       setCommunity_goods_category_name(ids.name)
-  //       break
-  //     case 'order-model-id':
-  //       setCommunity_param_template_id(ids.id)
-  //       setCommunity_param_template_name(ids.name)
-  //       break
-  //     default:
-  //       ;
-  //   }
-  //   win && win.close()
-  // }
-
-  // window.localJump = function () {
-  //   push("/main/table")
-  //   win && win.close()
-  // }
+  window.localClick = function (type, ids) {
+    switch (type) {
+      case 'provider_param_template_id':
+        setProvider_param_template_id(ids.id)
+        setProvider_param_template_name(ids.name)
+        break
+      default:
+        ;
+    }
+    win && win.close()
+  }
 
   function save (jump) {
-    // if (!name || !pics.length || !community_param_template_id || !community_goods_category_id || !unit_price || !tag_ids.length || !unit) {
-    //   message.warning("请完善信息")
-    //   return
-    // }
-    // if (weight > 32767 || weight < -32768) {
-    //   message.warning("权重值超出范围")
-    //   return
-    // }
-    // let body = {
-    //   name,
-    //   status,
-    //   provider_goods: { provider_type: 'internal', goods_id: 1 },
-    //   pics,
-    //   community_goods_category_id,
-    //   community_param_template_id,
-    //   tag_ids,
-    //   unit_price,
-    //   unit,
-    //   refundable,
-    //   recommended,
-    //   min_order_amount: min_order_amount || 1,
-    //   max_order_amount: max_order_amount || 1,
-    //   weight: weight || 1,
-    //   unit_cost,
-    //   disc_price,
-    //   repeat_order,
-    //   batch_order,
-    //   introduction
-    // }
-    // setLoading(true)
-    // const promise = communityGoods(id ? "modify" : 'add', id, undefined, body)
-    // promise.then(r => {
-    //   setLoading(false)
-    //   if (!r.error) {
-    //     if (!jump) {
-    //       h.replace('/main/editCommunityGood')
-    //     }
-    //     saveSuccess(jump)
-    //     setName(undefined)
-    //     setStatus("available")
-    //     setPics([])
-    //     setCommunity_param_template_id(undefined)
-    //     setCommunity_goods_category_id(undefined)
-    //     setCommunity_param_template_name(undefined)
-    //     setCommunity_goods_category_name(undefined)
-    //     setTag_ids([])
-    //     setTags([])
-    //     setUnit(undefined)
-    //     setUnit_price(undefined)
-    //     setRefundable(true)
-    //     setUnit_cost(undefined)
-    //     setDisc_price(undefined)
-    //     setMax_order_amount(undefined)
-    //     setMin_order_amount(undefined)
-    //     setRepeat_order(undefined)
-    //     setBatch_order(undefined)
-    //     setWeight(undefined)
-    //     setIntroduction("");
-    //     setImageUrl(undefined)
-    //   }
-    // }).catch(() => {
-    //   if (!jump) {
-    //     h.replace('/main/editCommunityGood')
-    //   }
-    //   setLoading(false)
-    // })
-  }
-
-  function parsing () {
-    imageUrl && setPics([imageUrl])
-  }
-
-  function getBase64 (img, callback) {
-    // const reader = new FileReader();
-    // reader.addEventListener('load', () => callback(reader.result));
-    // reader.readAsDataURL(img);
-  }
-
-  function handleChange (info) {
-    // if (info.file.status === 'uploading') {
-    //   this.setState({ loading: true });
-    //   return;
-    // }
-    // if (info.file.status === 'done') {
-    //   // Get this url from response in real world.
-    //   getBase64(info.file.originFileObj, imageUrl =>
-    //     this.setState({
-    //       imageUrl,
-    //       loading: false,
-    //     }),
-    //   );
-    // }
-  };
-
-  function beforeUpload (file) {
-    // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-
-    // if (!isJpgOrPng) {
-    //   message.error('You can only upload JPG/PNG file!');
-    // }
-    // const isLt2M = file.size / 1024 / 1024 < 2;
-    // if (!isLt2M) {
-    //   message.error('Image must smaller than 2MB!');
-    // }
-    // return isJpgOrPng && isLt2M;
+    if (!name || !provider_param_template_id || !introduction || !unit_price || !unit) {
+      message.warning("请完善信息")
+      return
+    }
+    let body = {
+      name,
+      unit_price,
+      unit,
+      status,
+      provider_param_template_id,
+      refund_method: refund_method ? { refund_type: refund_method, refund_period: value } : refund_method,
+      min_order_amount: min_order_amount || 1,
+      max_order_amount: max_order_amount || 100000,
+      repeat_order: repeat_order || 1,
+      introduction
+    }
+    setLoading(true)
+    const promise = goods(id ? "modify" : 'add', id, undefined, body)
+    promise.then(r => {
+      setLoading(false)
+      if (!r.error) {
+        if (!jump) {
+          h.replace('/main/edit-goods')
+        }
+        saveSuccess(jump)
+        setValue(undefined)
+        setName(undefined)
+        setUnit(undefined)
+        setUnit_price(undefined)
+        setStatus("available")
+        setProvider_param_template_name(undefined)
+        setProvider_param_template_id(undefined)
+        setRefund_method(undefined)
+        setMax_order_amount(undefined)
+        setMin_order_amount(undefined)
+        setRepeat_order(undefined)
+        setIntroduction("");
+      }
+    }).catch(() => {
+      if (!jump) {
+        h.replace('/main/edit-goods')
+      }
+      setLoading(false)
+    })
   }
 
   return (
@@ -180,7 +96,7 @@ function EditGoodsView () {
             <span onClick={()=>push("/main/home")}>首页</span>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <span onClick={()=>push("/main/goods-manage")}>商品管理</span>
+            <span onClick={()=>push("/main/goods")}>商品管理</span>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{id?"修改":"新增"}商品</Breadcrumb.Item>
         </Breadcrumb>
@@ -199,14 +115,14 @@ function EditGoodsView () {
             <span>*</span>
             <div className={c.itemText}>商品单价</div>
           </div>
-          <Input maxLength={40} placeholder="请输入商品单价" onChange={e=>setName(e.target.value)} value={name} className={c.itemInput}></Input>
+          <Input placeholder="请输入商品单价" onChange={e=>setUnit_price(e.target.value)} value={unit_price} className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>
             <span>*</span>
             <div className={c.itemText}>商品单位</div>
           </div>
-          <Input maxLength={40} placeholder="请输入商品单位" onChange={e=>setName(e.target.value)} value={name} className={c.itemInput}></Input>
+          <Input maxLength={20} placeholder="请输入商品单位" onChange={e=>setUnit(e.target.value)} value={unit} className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>
@@ -216,11 +132,11 @@ function EditGoodsView () {
             <div onClick={()=>{
                win = window.open("/select-order-model", "_blank", "left=390,top=145,width=1200,height=700")
             }} className={c.itemSelect}>
-              <div className={c.itemSelectP} style={{color:community_param_template_name?"rgba(0, 0, 0, 0.85)":"rgba(0,0,0,0.25)"}}>{community_param_template_name?community_param_template_name:'请设置下单模型'}</div>
+              <div className={c.itemSelectP} style={{color:provider_param_template_name?"rgba(0, 0, 0, 0.85)":"rgba(0,0,0,0.25)"}}>{provider_param_template_name?provider_param_template_name:'请设置下单模型'}</div>
               <div>选择</div>
             </div>
             <Button type="primary" className={c.itemBtn} onClick={()=>{
-              push('/main/editOrderModel')
+              push('/main/edit-order-model')
             }}>新增模型</Button>
         </div>
         <div className={c.item} style={{alignItems:'flex-start'}}>
@@ -228,10 +144,16 @@ function EditGoodsView () {
             <span>*</span>
             <div className={c.itemText}>退款时限</div>
           </div>
-          <Radio.Group onChange={e=>setRecommended(e.target.value)} value={recommended} className={c.closeTimeView}>
-            <Radio value={false} className={c.closeTime}>不允许退款</Radio>
-            <Radio value={true} className={c.closeTime}>从下单起<Input className={c.closeTimeI}/>天内可以退款</Radio>
-            <Radio value={1} className={c.closeTime}>从订单完成起<Input className={c.closeTimeI}/>天内可以退款</Radio>
+          <Radio.Group onChange={e=>setRefund_method(e.target.value)} value={refund_method} className={c.closeTimeView}>
+            <Radio value={undefined} className={c.closeTime}>不允许退款</Radio>
+            <Radio value="after_started" className={c.closeTime}>从下单起<Input onFocus={()=>{
+              setRefund_method("after_started")
+              setValue(undefined)
+            }} maxLength={3} value={refund_method==="after_started"?value:""} onChange={e=>setValue(e.target.value)} className={c.closeTimeI}/>天内可以退款</Radio>
+            <Radio value="after_closed" className={c.closeTime}>从订单完成起<Input onFocus={()=>{
+              setRefund_method("after_closed")
+              setValue(undefined)
+            }} maxLength={3} value={refund_method==="after_closed"?value:""} onChange={e=>setValue(e.target.value)} className={c.closeTimeI}/>天内可以退款</Radio>
           </Radio.Group>
         </div>
         <div className={c.item}>
@@ -239,35 +161,36 @@ function EditGoodsView () {
             <span className={c.white}>*</span>
             <div className={c.itemText}>最低下单</div>
           </div>
-          <Input type="number" onChange={e=>setUnit_cost(e.target.value)} value={unit_cost} placeholder="最低下单数量，默认为1" className={c.itemInput}></Input>
+          <Input type="number" onChange={e=>setMin_order_amount(e.target.value)} value={min_order_amount} placeholder="最低下单数量，默认为1" className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>
             <span className={c.white}>*</span>
             <div className={c.itemText}>最高下单</div>
           </div>
-          <Input type="number" onChange={e=>setUnit_price(e.target.value)} value={unit_price} placeholder="最高下单数量，默认为100000" className={c.itemInput}></Input>
+          <Input type="number" onChange={e=>setMax_order_amount(e.target.value)} value={max_order_amount} placeholder="最高下单数量，默认为100000" className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>
             <span className={c.white}>*</span>
             <div className={c.itemText}>重复下单</div>
           </div>
-          <Input type="number" onChange={e=>setDisc_price(e.target.value)} value={disc_price} placeholder="允许重复下单的数量，默认为0" className={c.itemInput}></Input>
+          <Input type="number" onChange={e=>setRepeat_order(e.target.value)} value={repeat_order} placeholder="允许重复下单的数量，默认为1" className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>
             <span className={c.white}>*</span>
-            <div className={c.itemText}>下单状态</div>
+            <div className={c.itemText}>状态</div>
           </div>
-          <Radio.Group onChange={e=>setRecommended(e.target.value)} value={recommended} className={c.itemGrop} style={{justifyContent:'flex-start'}}>
-            <Radio value={false} className={c.itemRadio} style={{width:'33.333%'}}>正常下单</Radio>
-            <Radio value={true} className={c.itemRadio} style={{width:'33.333%'}}>关闭下单</Radio>
+          <Radio.Group onChange={e=>setStatus(e.target.value)} value={status} className={c.itemGrop}>
+            <Radio value="available" className={c.itemRadio}>已上架</Radio>
+            <Radio value="paused" className={c.itemRadio}>已下架</Radio>
+            <Radio value="unavailable" className={c.itemRadio}>已上架但关闭下单</Radio>
           </Radio.Group>
         </div>
         <div className={c.item} style={{alignItems:'flex-start'}}>
           <div className={c.itemName}>
-            <span className={c.white}>*</span>
+            <span>*</span>
             <div className={c.itemText}>商品说明</div>
           </div>
           <ReactQuill modules={MODULES} className={c.quill} theme="snow" value={introduction} onChange={e=>setIntroduction(e)}/>
