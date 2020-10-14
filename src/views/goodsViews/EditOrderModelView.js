@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import c from '../../styles/edit.module.css'
-import { Input, Button, message, Breadcrumb } from 'antd'
+import { Input, Button, message, Breadcrumb, Table } from 'antd'
 import good5 from '../../icons/good/good5.png'
 import good8 from '../../icons/good/good8.png'
 import { paramTemplates } from "../../utils/api"
@@ -49,6 +49,24 @@ function EditOrderModelView () {
       setLoading(false)
     })
   }
+
+  const columns = [
+    {
+      title: '参数类型',
+      dataIndex: 'type',
+      align: 'center',
+  },
+    {
+      title: '参数说明',
+      dataIndex: 'introduction',
+      align: 'center',
+  },
+  ]
+  const dataSource = [
+    { type: 'text', introduction: "允许输入任意文字类型内容" },
+    { type: 'number', introduction: "只允许输入数字类型内容" },
+    { type: 'url', introduction: "验证输入框内的内容必须包含至少一条链接" },
+  ]
 
   return (
     <div className={c.container}>
@@ -113,6 +131,13 @@ function EditOrderModelView () {
             </div>
           </div>
         </div>
+        <div className={c.introductionTitle}>参数类型表</div>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          size="small"
+          pagination={false}
+        />
       </div>
     </div>
   )

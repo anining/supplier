@@ -45,6 +45,12 @@ const styles = {
     marginLeft: 70,
     marginTop: 31,
   },
+  closeBtn: {
+    height: 40,
+    width: 170,
+    color: '#333',
+    marginTop: 31,
+  },
   cancelBtn: {
     height: 40,
     width: 170,

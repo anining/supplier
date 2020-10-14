@@ -502,3 +502,13 @@
   width: 100px;
   margin-bottom: 8px;
 }
+
+.introductionTitle {
+  height: 80px;
+  color: #333333;
+  font-weight: 500;
+  font-size: 1.214rem;
+  border-top: 1px solid #E1E1E1;
+  line-height: 80px;
+  margin-top: 60px;
+}
