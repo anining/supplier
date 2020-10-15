@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/modal'
-import { Button, Popconfirm, Space, DatePicker, Modal, Table, Input } from 'antd'
+import { Button, Popconfirm, Space, DatePicker, Modal, Table, Input, message } from 'antd'
 import good10 from '../../icons/good/good10.png'
 import c from '../../styles/view.module.css'
 import good11 from '../../icons/good/good11.png'
@@ -9,14 +9,69 @@ import good13 from '../../icons/good/good13.png'
 import good9 from '../../icons/good/good9.png'
 import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
-import { push, saveSuccess } from "../../utils/util"
+import { push, getKey, saveSuccess, dateFormat } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
-import { orders } from "../../utils/api"
+import { orders, updateOrders } from "../../utils/api"
+import { ORDER_STATUS } from "../../utils/config"
 
 function OrderView () {
   const [visible, setVisible] = useState(false)
+  const [visibleS, setVisibleS] = useState(false)
   const [visibleRemark, setVisibleRemark] = useState(false)
-  const [data] = useState([
+  const [selected, setSelected] = useState()
+  const [oid, setOid] = useState({})
+  const [data, setData] = useState([])
+  const [current, setCurrent] = useState(1)
+  const [pageSize] = useState(10)
+  const [total, setTotal] = useState(0)
+  const [date, setDate] = useState([])
+  const [moment, setMoment] = useState()
+  const [order_id, setOrder_id] = useState()
+  const [goods_name, setGoods_name] = useState()
+  const [status, setStatus] = useState()
+  const [refund_status, setRefund_status] = useState()
+  const [loading, setLoading] = useState(false)
+  const [actionLoading, setActionLoading] = useState(false)
+
+  function format (arr) {
+    arr.forEach((item, index) => {
+      item.key = index
+      item.time = dateFormat(item.created_at, "yyyy-MM-dd HH:mm:ss")
+    })
+    return arr
+  }
+
+  function get (current) {
+    let body = { page: current, size: pageSize }
+    if (order_id) {
+      body = { ...body, ...{ order_id } }
+    }
+    if (goods_name) {
+      body = { ...body, ...{ goods_name } }
+    }
+    if (status) {
+      body = { ...body, ...{ status } }
+    }
+    if (refund_status) {
+      body = { ...body, ...{ refund_status } }
+    }
+    if (date.length) {
+      body = { ...body, ...{ start_from: date[0], end_with: date[1] } }
+    }
+    setLoading(true)
+    orders("get", undefined, body).then(r => {
+      setLoading(false)
+      if (!r.error) {
+        const { data, total } = r
+        setTotal(total)
+        setData(format(data))
+      }
+    }).catch(() => {
+      setLoading(false)
+    })
+  }
+
+  const [label] = useState([
     {
       label: '订单总数',
       number: '10,100',
@@ -51,11 +106,33 @@ function OrderView () {
     setVisible(false)
   }
 
+  function modalOk (key) {
+    switch (key) {
+      case "status":
+        if (!selected) {
+          message.warning("请完善信息")
+          return
+        }
+        updateOrders(oid.id, { status: selected }).then(r => {
+          setVisibleS(false)
+          if (!r.error) {
+            saveSuccess(false)
+            get(current)
+          }
+        }).catch(() => {
+          setVisibleS(false)
+        })
+        break;
+      default:
+    }
+  }
+  const { text: t, color } = getKey(oid.status, ORDER_STATUS)
+
   return (
     <div className="view">
       <div className={c.container}>
-        <TableHeaderComponent data={data}/>
-        <RTable />
+        <TableHeaderComponent data={label}/>
+        <RTable status={status} get={get} current={current} setDate={setDate} setMoment={setMoment} setCurrent={setCurrent} setActionLoading={setActionLoading} data={data} setOrder_id={setOrder_id} setGoods_name={setGoods_name} setStatus={setStatus} setRefund_status={setRefund_status} goods_name={goods_name} moment={moment} actionLoading={actionLoading} loading={loading} total={total} pageSize={pageSize} refund_status={refund_status} order_id={order_id} setVisibleS={setVisibleS} setOid={setOid}/>
       </div>
       <Modal
         visible={visibleRemark}
@@ -83,6 +160,45 @@ function OrderView () {
           <div>
             <Button style={styles.cancelBtn}>取消</Button>
             <Button type="primary" style={styles.okBtn}>确定</Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        visible={visibleS}
+        onOk={handleOk}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+      >
+        <div style={styles.view}>
+          <div style={styles.label}>
+            <img src={auth12} alt="" style={styles.inputImg} />
+            修改状态
+          </div>
+          <div>
+            <div className={c.statusModelTips}>选中订单：{oid.id}    订单状态：<span style={{color}}>{t}</span></div>
+            <div className={c.statusModelTitle}>修改为</div>
+            <div>
+              <Button className={c.statusBtn} onClick={()=>setSelected("processing")} style={{
+                color:selected==="processing"?"#FFC415":"rgba(0, 0, 0, 0.25)",
+                background:selected==="processing"?"#FFFAEB":"#fff",
+                borderColor:selected==="processing"?"#FFCB31":"rgba(0, 0, 0, 0.15)",
+              }}>进行中</Button>
+              <Button className={c.statusBtn} onClick={()=>setSelected("completed")} style={{
+                color:selected==="completed"?"#FFC415":"rgba(0, 0, 0, 0.25)",
+                background:selected==="completed"?"#FFFAEB":"#fff",
+                borderColor:selected==="completed"?"#FFCB31":"rgba(0, 0, 0, 0.15)",
+              }}>已完成</Button>
+              <Button className={c.statusBtn} onClick={()=>setSelected("closed")} style={{
+                color:selected==="closed"?"#FFC415":"rgba(0, 0, 0, 0.25)",
+                background:selected==="closed"?"#FFFAEB":"#fff",
+                borderColor:selected==="closed"?"#FFCB31":"rgba(0, 0, 0, 0.15)",
+              }}>已终止</Button>
+            </div>
+          </div>
+          <div>
+            <Button onClick={()=>setVisibleS(false)} style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" style={styles.okBtn} onClick={()=>modalOk("status")}>确定</Button>
           </div>
         </div>
       </Modal>
@@ -123,20 +239,8 @@ function OrderView () {
   )
 }
 
-function RTable () {
+function RTable ({ get, current, setDate, setCurrent, setMoment, setActionLoading, data, setOrder_id, setGoods_name, setStatus, setRefund_status, order_id, goods_name, moment, loading, actionLoading, total, pageSize, status, refund_status, setVisibleS, setOid }) {
   const [selectedRows, setSelectRows] = useState([]);
-  const [data, setData] = useState([])
-  const [current, setCurrent] = useState(1)
-  const [pageSize] = useState(10)
-  const [total, setTotal] = useState(0)
-  const [date, setDate] = useState([])
-  const [moment, setMoment] = useState()
-  const [order_id, setOrder_id] = useState()
-  const [goods_name, setGoods_name] = useState()
-  const [status, setStatus] = useState()
-  const [refund_status, setRefund_status] = useState()
-  const [loading, setLoading] = useState(false)
-  const [actionLoading, setActionLoading] = useState(false)
 
   useEffect(() => {
     get(current)
@@ -145,43 +249,6 @@ function RTable () {
   function dateChange (data, dataString) {
     setDate([new Date(dataString[0]).toISOString(), new Date(dataString[1]).toISOString()])
     setMoment(data)
-  }
-
-  function get (current) {
-    let body = { page: current, size: pageSize }
-    if (order_id) {
-      body = { ...body, ...{ order_id } }
-    }
-    if (goods_name) {
-      body = { ...body, ...{ goods_name } }
-    }
-    if (status) {
-      body = { ...body, ...{ status } }
-    }
-    if (refund_status) {
-      body = { ...body, ...{ refund_status } }
-    }
-    if (date.length) {
-      body = { ...body, ...{ start_from: date[0], end_with: date[1] } }
-    }
-    setLoading(true)
-    orders("get", undefined, body).then(r => {
-      setLoading(false)
-      if (!r.error) {
-        const { data, total } = r
-        setTotal(total)
-        setData(format(data))
-      }
-    }).catch(() => {
-      setLoading(false)
-    })
-  }
-
-  function format (arr) {
-    arr.forEach((item, index) => {
-      item.key = index
-    })
-    return arr
   }
 
   function onChange (page, pageSize) {
@@ -229,34 +296,6 @@ function RTable () {
     setDate([])
   }
 
-  const obj = {
-    available: {
-      color: "rgba(0, 0, 0, 0.65)",
-      text: '查看详情',
-    },
-    unavailable: {
-      color: "#FFCB31",
-      text: '查看详情',
-    },
-  }
-  const obj1 = {
-    closed: {
-      color: "#FF5F5F",
-      text: '已终止',
-    },
-    completed: {
-      color: "#61BD60",
-      text: '已完成',
-    },
-    processing: {
-      color: "#458BFF",
-      text: '进行中',
-    },
-    pending: {
-      color: "#FF7600",
-      text: '待处理',
-    },
-  }
   const obj2 = {
     available: {
       color: "#FF458BFF",
@@ -286,133 +325,129 @@ function RTable () {
     },
   }
   const columns = [
-    {
-      title: '订单编号',
-      dataIndex: 'id',
-      align: 'center',
+      {
+        title: '订单编号',
+        dataIndex: 'id',
+        align: 'center',
   },
-    {
-      title: '商品名称',
-      dataIndex: 'name',
-      align: 'center',
+      {
+        title: '商品名称',
+        dataIndex: 'goods_name',
+        align: 'center',
   },
-    {
-      title: '下单数量',
-      align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
+      {
+        title: '下单数量',
+        align: 'center',
+        dataIndex: 'amount',
+  },
+      {
+        title: '订单数量',
+        align: 'center',
+        dataIndex: 'disc_price',
+        render: (text, record, index) => {
+          return '-'
+        }
+  },
+      {
+        title: '下单信息',
+        align: 'center',
+        render: (text, record, index) => {
+          return (
+            <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
+          }
+          placement = "leftTop"
+          title = {
+              () => {
+                return (
+                  <div style={styles.popView}>
+                    <div style={styles.popTitle}>下单信息：</div>
+                    <div style={styles.popText}>下单链接：<span style={styles.popSpan}>-</span></div>
+                    <div style={styles.popText}>备&#12288;&#12288;注：<span style={styles.popSpan}>-</span></div>
+                </div>
+                )
+              }
+            } >
+            <div>查看详情</div> <
+            /Popconfirm>
+        )
       }
-  },
-    {
-      title: '订单数量',
-      align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
-  },
-    {
-      title: '下单信息',
-      align: 'center',
-      dataIndex: 'disc_price',
-      // render: (text, record, index) => {
-      //   return (
-      //     <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
-      //   }
-      //   placement = "leftTop"
-      //   title = {
-      //       () => {
-      //         return (
-      //           <div style={styles.popView}>
-      //             <div style={styles.popTitle}>下单信息：</div>
-      //             <div style={styles.popText}>下单链接：<span style={styles.popSpan}>https://www.baidu.com/s/u</span></div>
-      //             <div style={styles.popText}>备&#12288;&#12288;注：<span style={styles.popSpan}>围绕主题评论</span></div>
-      //         </div>
-      //         )
-      //       }
-      //     } >
-      //     <div>查看详情</div> <
-      //     /Popconfirm>
-      // )
-      // }
     },
     {
       title: '扩展信息',
       align: 'center',
       dataIndex: 'disc_price',
-      // render: (text, record, index) => {
-      //   return (
-      //     <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
-      //   }
-      //   placement = "leftTop"
-      //   title = {
-      //       () => {
-      //         return (
-      //           <div style={styles.popView}>
-      //             <div style={styles.popTitle}>扩展信息：</div>
-      //             <div style={styles.popText}>初始量：<span style={styles.popSpan}>1.234W</span></div>
-      //             <div style={styles.popText}>当前量：<span style={styles.popSpan}>1.234W</span></div>
-      //         </div>
-      //         )
-      //       }
-      //     } >
-      //     <div>查看详情</div> <
-      //     /Popconfirm>
-      // )
-      // }
-}, {
-      title: '订单状态',
-      align: 'center',
-      dataIndex: 'disc_price',
       render: (text, record, index) => {
-        return '-'
-      }
-}, {
-      title: '售后状态',
-      align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
-}, {
-      title: '结算状态',
-      align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
-}, {
-      title: '订单历程',
-      align: 'center',
-      dataIndex: 'disc_price',
-      // render: (text, record, index) => {
-      //   return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
-      // }
-}, {
-      title: '下单时间',
-      align: 'center',
-      dataIndex: 'disc_price',
-      render: (text, record, index) => {
-        return '-'
-      }
-}, {
-      title: '操作',
-      align: 'center',
-      render: (text, record, index) => (
-        <Space size="small">
-      <div style={{cursor:'wait'}} className={c.clickText}>修改状态</div>
-      <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-      <div style={{cursor:'wait'}} className={c.clickText}>退款</div>
-      <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-      <div style={{cursor:'wait'}} className={c.clickText}>加备注</div>
-    </Space>
+        return (
+          <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
+        }
+        placement = "leftTop"
+        title = {
+            () => {
+              return (
+                <div style={styles.popView}>
+                  <div style={styles.popTitle}>扩展信息：</div>
+                  <div style={styles.popText}>初始量：<span style={styles.popSpan}>-</span></div>
+                  <div style={styles.popText}>当前量：<span style={styles.popSpan}>-</span></div>
+              </div>
+              )
+            }
+          } >
+          <div>查看详情</div> <
+          /Popconfirm>
       )
+    }
+}, {
+  title: '订单状态',
+  align: 'center',
+  dataIndex: 'status',
+  render: (text, record, index) => {
+    const { text: t, color } = getKey(text, ORDER_STATUS)
+    return <div style={{color}}>{t}</div>
+  }
+}, {
+  title: '售后状态',
+  align: 'center',
+  dataIndex: 'disc_price',
+  render: (text, record, index) => {
+    return '-'
+  }
+}, {
+  title: '结算状态',
+  align: 'center',
+  dataIndex: 'disc_price',
+  render: (text, record, index) => {
+    return '-'
+  }
+}, {
+  title: '订单历程',
+  align: 'center',
+  render: (text, record, index) => {
+    return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
+  }
+}, {
+  title: '下单时间',
+  align: 'center',
+  dataIndex: 'time',
+}, {
+  title: '操作',
+  align: 'center',
+  render: (text, record, index) => (
+    <Space size="small">
+      <div onClick={()=>{
+        setOid(record)
+        setVisibleS(true)
+      }} className={c.clickText}>修改状态</div>
+          <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+          <div style={{cursor:'wait'}} className={c.clickText}>退款</div>
+          <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+          <div style={{cursor:'wait'}} className={c.clickText}>加备注</div>
+        </Space>
+  )
 },
 ];
 
-  return (
-    <div className={c.main}>
+return (
+  <div className={c.main}>
       <div className={c.searchView}>
         <div className={c.search}>
           <div className={c.searchL}>
@@ -440,7 +475,7 @@ function RTable () {
             </div>
         </div>
       </div>
-      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[{name:"批量设置已终止",key:"closed"},{name:"批量设置已完成",key:"completed"},{name:"批量设置进行中",key:"processing"},{name:"批量设置待处理",key:"pending"}]}/>
+      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[]}/>
       <Table
         columns={columns}
         rowSelection={{
@@ -458,7 +493,7 @@ function RTable () {
         }}
       />
     </div>
-  )
+)
 }
 
 export default OrderView

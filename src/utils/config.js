@@ -36,4 +36,22 @@ const PERMISSIONS = {
   cardbiz: '卡密业务'
 }
 
-export { API_URL, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }
+const ORDER_STATUS = {
+  closed: {
+    color: "#FF5F5F",
+    text: '已终止',
+  },
+  completed: {
+    color: "#61BD60",
+    text: '已完成',
+  },
+  processing: {
+    color: "#458BFF",
+    text: '进行中',
+  },
+  pending: {
+    color: "#FF7600",
+    text: '待处理',
+  },
+}
+export { API_URL,ORDER_STATUS, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }

@@ -49,3 +49,8 @@ export function orders (type, oid, table, body) {
       //   return transformFetch("DELETE", `/community-goods-categories/${gid}`);
   }
 }
+
+// 更新订单
+export function updateOrders (oid, body) {
+  return transformFetch("PATCH", `/orders/${oid}`, body)
+}
