@@ -32,10 +32,12 @@ function OrderView () {
   const [refund_status, setRefund_status] = useState()
   const [loading, setLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
+  const [comment,setComment] = useState()
 
   function format (arr) {
     arr.forEach((item, index) => {
       item.key = index
+      item.comment = item.comment || '-'
       item.time = dateFormat(item.created_at, "yyyy-MM-dd HH:mm:ss")
     })
     return arr
@@ -103,6 +105,8 @@ function OrderView () {
   }
 
   function handleCancel () {
+    setVisibleS(false)
+    setVisibleRemark(false)
     setVisible(false)
   }
 
@@ -123,6 +127,17 @@ function OrderView () {
           setVisibleS(false)
         })
         break;
+      case "remark":
+        updateOrders(oid.id, { comment }).then(r => {
+          setVisibleRemark(false)
+          if (!r.error) {
+            saveSuccess(false)
+            get(current)
+          }
+        }).catch(() => {
+          setVisibleRemark(false)
+        })
+        break;
       default:
     }
   }
@@ -132,7 +147,7 @@ function OrderView () {
     <div className="view">
       <div className={c.container}>
         <TableHeaderComponent data={label}/>
-        <RTable status={status} get={get} current={current} setDate={setDate} setMoment={setMoment} setCurrent={setCurrent} setActionLoading={setActionLoading} data={data} setOrder_id={setOrder_id} setGoods_name={setGoods_name} setStatus={setStatus} setRefund_status={setRefund_status} goods_name={goods_name} moment={moment} actionLoading={actionLoading} loading={loading} total={total} pageSize={pageSize} refund_status={refund_status} order_id={order_id} setVisibleS={setVisibleS} setOid={setOid}/>
+        <RTable setComment={setComment} status={status} get={get} current={current} setVisibleRemark={setVisibleRemark} setDate={setDate} setMoment={setMoment} setCurrent={setCurrent} setActionLoading={setActionLoading} data={data} setOrder_id={setOrder_id} setGoods_name={setGoods_name} setStatus={setStatus} setRefund_status={setRefund_status} goods_name={goods_name} moment={moment} actionLoading={actionLoading} loading={loading} total={total} pageSize={pageSize} refund_status={refund_status} order_id={order_id} setVisibleS={setVisibleS} setOid={setOid}/>
       </div>
       <Modal
         visible={visibleRemark}
@@ -144,22 +159,22 @@ function OrderView () {
         <div style={styles.view}>
           <div style={styles.label}>
             <img src={auth12} alt="" style={styles.inputImg} />
-            添加备注
+            修改备注
           </div>
           <div style={{marginBottom:11}}>
             <div style={styles.refundSelect}>
-              <div>添加备注：</div>
+              <div>修改备注：</div>
               <div onClick={()=>{
 
               }} className={c.itemSelect}>
-                <Input className={c.itemSelectP} placeholder="请在这里输入备注内容"/>
+                <Input maxLength={80} className={c.itemSelectP} value={comment} onChange={e=>setComment(e.target.value)} placeholder="请在这里输入备注内容"/>
               </div>
             </div>
-            <div style={{color:"#3C3D3C"}}>当前退款商品：<span style={{color:"#ff7600"}}>音符点赞 飞速 (202001051010)</span></div>
+            <div style={{color:"#3C3D3C"}}>当前修改商品：<span style={{color}}>{oid.goods_name}</span></div>
           </div>
           <div>
-            <Button style={styles.cancelBtn}>取消</Button>
-            <Button type="primary" style={styles.okBtn}>确定</Button>
+            <Button style={styles.cancelBtn} onClick={()=>setVisibleRemark(false)}>取消</Button>
+            <Button type="primary" style={styles.okBtn} onClick={()=>modalOk("remark")}>确定</Button>
           </div>
         </div>
       </Modal>
@@ -239,7 +254,7 @@ function OrderView () {
   )
 }
 
-function RTable ({ get, current, setDate, setCurrent, setMoment, setActionLoading, data, setOrder_id, setGoods_name, setStatus, setRefund_status, order_id, goods_name, moment, loading, actionLoading, total, pageSize, status, refund_status, setVisibleS, setOid }) {
+function RTable ({ get, current,setVisibleRemark,setComment, setDate, setCurrent, setMoment, setActionLoading, data, setOrder_id, setGoods_name, setStatus, setRefund_status, order_id, goods_name, moment, loading, actionLoading, total, pageSize, status, refund_status, setVisibleS, setOid }) {
   const [selectedRows, setSelectRows] = useState([]);
 
   useEffect(() => {
@@ -349,6 +364,12 @@ function RTable ({ get, current, setDate, setCurrent, setMoment, setActionLoadin
         }
   },
       {
+        title: '备注',
+        align: 'center',
+        dataIndex: 'comment',
+        render: (text, record, index) => <div className={c.noticeHtml}>{text}</div>
+  },
+      {
         title: '下单信息',
         align: 'center',
         render: (text, record, index) => {
@@ -440,7 +461,11 @@ function RTable ({ get, current, setDate, setCurrent, setMoment, setActionLoadin
           <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
           <div style={{cursor:'wait'}} className={c.clickText}>退款</div>
           <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-          <div style={{cursor:'wait'}} className={c.clickText}>加备注</div>
+      <div onClick={()=>{
+        setOid(record)
+        setVisibleRemark(true)
+        setComment(record.comment)
+      }} className={c.clickText}>加备注</div>
         </Space>
   )
 },
