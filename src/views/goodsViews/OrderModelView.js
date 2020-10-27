@@ -68,8 +68,6 @@ function RTable () {
   const [current, setCurrent] = useState(1)
   const [pageSize] = useState(10)
   const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [actionLoading, setActionLoading] = useState(false)
   const [search_name, setSearch_name] = useState()
 
   useEffect(() => {
@@ -77,17 +75,13 @@ function RTable () {
   }, [])
 
   function get (current) {
-    setLoading(true)
     let body = { page: current, size: pageSize }
     paramTemplates("get", undefined, body).then(r => {
-      setLoading(false)
       if (!r.error) {
         const { data, total } = r
         setTotal(total)
         setData(format(data))
       }
-    }).catch(() => {
-      setLoading(false)
     })
   }
 
@@ -148,20 +142,14 @@ function RTable () {
   };
 
   function submit (key) {
-    setActionLoading(true)
     switch (key) {
       case "delete":
-        const params = new URLSearchParams()
-        selectedRows.forEach(i => params.append("ids", data[i].id))
-        paramTemplates("delete", undefined, undefined, params.toString()).then(r => {
-          setActionLoading(false)
+        paramTemplates("delete", undefined, undefined, "ids=" + selectedRows.map(i => data[i].id).toString()).then(r => {
           if (!r.error) {
             saveSuccess(false)
             setSelectRows([])
             get(current)
           }
-        }).catch(() => {
-          setActionLoading(false)
         })
         break
       default:
@@ -174,14 +162,15 @@ function RTable () {
       <div className={c.searchView}>
           <div className={c.search}>
             <div className={c.searchL}>
-              <Input value={search_name} onPressEnter={()=>get(current)} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入分类名称" size="small" className={c.searchInput}/>
-              <Button icon={
-                <img src={good31} alt="" style={{width:14,marginRight:6}} />
-              }
-                size = "small"
-                loading={loading}
-                onClick={()=>get(current)}
-                className={c.searchBtn}>搜索模型</Button>
+              {/* <Input value={search_name} onPressEnter={()=>get(current)} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入分类名称" size="small" className={c.searchInput}/> */}
+              {/* { */}
+              {/* <Button icon={ */}
+              {/*   <img src={good31} alt="" style={{width:14,marginRight:6}} /> */}
+              {/* } */}
+              {/*   size = "small" */}
+              {/*   onClick={()=>get(current)} */}
+              {/*   className={c.searchBtn}>搜索模型</Button> */}
+              {/* } */}
             </div>
             <div className={c.searchR}>
               <Button icon={
@@ -194,7 +183,7 @@ function RTable () {
             </div>
           </div>
       </div>
-      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[{name:"批量删除",key:"delete"}]}/>
+      <DropdownComponent selectedRows={selectedRows} submit={submit} keys={[]}/>
       <Table
         columns={columns}
         rowSelection={{

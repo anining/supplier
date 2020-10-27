@@ -12,7 +12,7 @@ let win
 
 function EditGoodsView () {
   const { state = {} } = useHistory().location
-  const { id, introduction: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n, providing, refund_type, refund_period, repeat_order: r_o, status: s = "available", unit: u, unit_price: u_p } = state
+  const { id, intro: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n, providing, refund_type, refund_period, repeat_order: r_o, status: s = "available", unit: u, price: u_p } = state
   const h = useHistory()
   const [name, setName] = useState(n)
   const [value, setValue] = useState(refund_period)
@@ -47,15 +47,14 @@ function EditGoodsView () {
     }
     let body = {
       name,
-      unit_price,
       unit,
       status,
-      provider_param_template_id,
+      ptpl_id: provider_param_template_id,
+      intro: introduction,
       refund_method: refund_method ? { refund_type: refund_method, refund_period: value } : refund_method,
       min_order_amount: min_order_amount || 1,
       max_order_amount: max_order_amount || 100000,
-      repeat_order: repeat_order || 1,
-      introduction
+      price: unit_price,
     }
     setLoading(true)
     const promise = goods(id ? "modify" : 'add', id, undefined, body)

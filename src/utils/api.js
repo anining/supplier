@@ -14,13 +14,13 @@ export function password (old_password, new_password) {
 export function paramTemplates (type, pid, table, body) {
   switch (type) {
     case "get":
-      return transformFetch("GET", "/param-templates", table)
+      return transformFetch("GET", "/ptpls", table)
     case "add":
-      return transformFetch("POST", "/param-templates", body)
+      return transformFetch("POST", "/ptpls", body)
     case "modify":
-      return transformFetch("PATCH", `/param-templates/${pid}`, body)
+      return transformFetch("PATCH", `/ptpls/${pid}`, body)
     default:
-      return transformFetch("DELETE", `/param-templates/${pid}`)
+      // return transformFetch("DELETE", `/ptpls?${body}`)
   }
 }
 
@@ -37,6 +37,11 @@ export function goods (type, gid, table, body) {
       // return transformFetch("DELETE", `/goods/${gid}`);
   }
 }
+
+
+
+
+
 
 // 订单
 export function orders (type, oid, table, body) {

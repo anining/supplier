@@ -225,7 +225,7 @@ function RTable () {
   },
     {
       title: '单价',
-      dataIndex: 'unit_price',
+      dataIndex: 'price',
       align: 'center',
   },
     {
@@ -266,6 +266,9 @@ function RTable () {
       title: '重复下单',
       align: 'center',
       dataIndex: 'repeat_order',
+      render: (text, record, index) => {
+        return '-'
+      }
   },
     {
       title: '下单状态',
@@ -280,14 +283,14 @@ function RTable () {
       title: '商品说明',
       align: 'center',
       width: 300,
-      dataIndex: 'introduction',
+      dataIndex: 'intro',
       render: (text, record, index) => <div className={c.noticeHtml}>{getSimpleText(text)}</div>
   },
     {
       title: '操作',
       align: 'center',
       render: (text, record, index) => (
-        <div className={c.clickText} onClick={()=>push('/main/edit-goods',record)}>修改</div>
+        <div style={{cursor:'wait'}} className={c.clickText} onClick={()=>{}}>修改</div>
       )
     },
   ];
