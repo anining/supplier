@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/modal'
-import { Button, Modal, Table, Input } from 'antd'
+import { Button, Space, Modal, Table, Input } from 'antd'
 import good1 from '../../icons/good/good1.png'
 import c from '../../styles/view.module.css'
 import good2 from '../../icons/good/good2.png'
@@ -107,9 +107,9 @@ function GoodsView () {
         <div style={styles.view}>
           <div style={styles.label}>
             <img src={auth12} alt="" style={styles.inputImg} />
-            用户余额修改
+            修改价格
           </div>
-          <div style={styles.inputView}>修改余额：<Input placeholder="请在这里修改余额" style={styles.input}/></div>
+          <div style={styles.inputView}>修改价格：<Input placeholder="请在这里修改价格" style={styles.input}/></div>
           <div>
             <Button style={styles.cancelBtn}>取消</Button>
             <Button type="primary" style={styles.okBtn}>确定</Button>
@@ -203,13 +203,17 @@ function RTable () {
   }
 
   const obj = {
-    available: {
+    unavailable: {
       color: "#FF5F5F",
       text: '关闭下单',
     },
-    unavailable: {
+    available: {
       color: "rgba(0, 0, 0, 0.65)",
       text: '正常下单',
+    },
+    paused: {
+      color: "rgba(0, 0, 0, 0.65)",
+      text: '暂停下单',
     },
   }
   const columns = [
@@ -263,14 +267,6 @@ function RTable () {
       dataIndex: 'max_order_amount',
   },
     {
-      title: '重复下单',
-      align: 'center',
-      dataIndex: 'repeat_order',
-      render: (text, record, index) => {
-        return '-'
-      }
-  },
-    {
       title: '下单状态',
       align: 'center',
       dataIndex: 'status',
@@ -290,7 +286,11 @@ function RTable () {
       title: '操作',
       align: 'center',
       render: (text, record, index) => (
-        <div style={{cursor:'wait'}} className={c.clickText} onClick={()=>{}}>修改</div>
+        <Space size="small">
+          <div style={{cursor:'wait'}} className={c.clickText} onClick={()=>{}}>修改商品</div>
+          <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+          <div style={{cursor:'wait'}} className={c.clickText}>修改价格</div>
+        </Space>
       )
     },
   ];

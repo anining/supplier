@@ -382,8 +382,9 @@ function RTable ({ get, current,setVisibleRemark,setComment, setDate, setCurrent
                 return (
                   <div style={styles.popView}>
                     <div style={styles.popTitle}>下单信息：</div>
-                    <div style={styles.popText}>下单链接：<span style={styles.popSpan}>-</span></div>
-                    <div style={styles.popText}>备&#12288;&#12288;注：<span style={styles.popSpan}>-</span></div>
+                      {
+                        record.args ? Object.keys(JSON.parse(record.args || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.args || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
+                      }
                 </div>
                 )
               }
@@ -407,8 +408,9 @@ function RTable ({ get, current,setVisibleRemark,setComment, setDate, setCurrent
               return (
                 <div style={styles.popView}>
                   <div style={styles.popTitle}>扩展信息：</div>
-                  <div style={styles.popText}>初始量：<span style={styles.popSpan}>-</span></div>
-                  <div style={styles.popText}>当前量：<span style={styles.popSpan}>-</span></div>
+                    {
+                      record.extras ? Object.keys(JSON.parse(record.extras || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.extras || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
+                    }
               </div>
               )
             }

@@ -1,5 +1,5 @@
 const DEVELOPER = "Production"
-const API_URL = DEVELOPER === "test" ? "https://test-omnivstore.prismslight.com/supp" : "http://192.168.1.36:8000/supp"
+const API_URL = DEVELOPER === "Production" ? "https://test-omnivstore.prismslight.com/supp" : "http://192.168.1.36:8000/supp"
 const JUMP_DELAY = 500
 const MODULES = {
   toolbar: [

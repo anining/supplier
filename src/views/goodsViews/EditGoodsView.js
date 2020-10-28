@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import c from '../../styles/edit.module.css'
-import { Input, Button, Radio, Breadcrumb, message } from 'antd'
+import { Input, InputNumber, Button, Radio, Breadcrumb, message } from 'antd'
 import ReactQuill from 'react-quill';
 import good5 from '../../icons/good/good5.png'
 import { goBack, saveSuccess, push } from "../../utils/util";
@@ -12,7 +12,7 @@ let win
 
 function EditGoodsView () {
   const { state = {} } = useHistory().location
-  const { id, intro: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n, providing, refund_type, refund_period, repeat_order: r_o, status: s = "available", unit: u, price: u_p } = state
+  const { id, intro: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n, providing, refund_type, refund_period, status: s = "available", unit: u, price: u_p } = state
   const h = useHistory()
   const [name, setName] = useState(n)
   const [value, setValue] = useState(refund_period)
@@ -25,7 +25,6 @@ function EditGoodsView () {
   const [refund_method, setRefund_method] = useState(refund_type)
   const [min_order_amount, setMin_order_amount] = useState(min_o_a)
   const [max_order_amount, setMax_order_amount] = useState(max_o_a)
-  const [repeat_order, setRepeat_order] = useState(r_o)
   const [introduction, setIntroduction] = useState(i)
 
   window.localClick = function (type, ids) {
@@ -75,7 +74,6 @@ function EditGoodsView () {
         setRefund_method(undefined)
         setMax_order_amount(undefined)
         setMin_order_amount(undefined)
-        setRepeat_order(undefined)
         setIntroduction("");
       }
     }).catch(() => {
@@ -145,14 +143,14 @@ function EditGoodsView () {
           </div>
           <Radio.Group onChange={e=>setRefund_method(e.target.value)} value={refund_method} className={c.closeTimeView}>
             <Radio value={undefined} className={c.closeTime}>不允许退款</Radio>
-            <Radio value="after_started" className={c.closeTime}>从下单起<Input onFocus={()=>{
+            <Radio value="after_started" className={c.closeTime}>从下单起<InputNumber onFocus={()=>{
               setRefund_method("after_started")
               setValue(undefined)
-            }} maxLength={3} value={refund_method==="after_started"?value:""} onChange={e=>setValue(e.target.value)} className={c.closeTimeI}/>天内可以退款</Radio>
-            <Radio value="after_closed" className={c.closeTime}>从订单完成起<Input onFocus={()=>{
+            }} maxLength={3} value={refund_method==="after_started"?value:""} onChange={e=>setValue(e)} className={c.closeTimeI}/>天内可以退款</Radio>
+            <Radio value="after_closed" className={c.closeTime}>从订单完成起<InputNumber onFocus={()=>{
               setRefund_method("after_closed")
               setValue(undefined)
-            }} maxLength={3} value={refund_method==="after_closed"?value:""} onChange={e=>setValue(e.target.value)} className={c.closeTimeI}/>天内可以退款</Radio>
+            }} maxLength={3} value={refund_method==="after_closed"?value:""} onChange={e=>setValue(e)} className={c.closeTimeI}/>天内可以退款</Radio>
           </Radio.Group>
         </div>
         <div className={c.item}>
@@ -168,13 +166,6 @@ function EditGoodsView () {
             <div className={c.itemText}>最高下单</div>
           </div>
           <Input type="number" onChange={e=>setMax_order_amount(e.target.value)} value={max_order_amount} placeholder="最高下单数量，默认为100000" className={c.itemInput}></Input>
-        </div>
-        <div className={c.item}>
-          <div className={c.itemName}>
-            <span className={c.white}>*</span>
-            <div className={c.itemText}>重复下单</div>
-          </div>
-          <Input type="number" onChange={e=>setRepeat_order(e.target.value)} value={repeat_order} placeholder="允许重复下单的数量，默认为1" className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>

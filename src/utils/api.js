@@ -38,11 +38,6 @@ export function goods (type, gid, table, body) {
   }
 }
 
-
-
-
-
-
 // 订单
 export function orders (type, oid, table, body) {
   switch (type) {

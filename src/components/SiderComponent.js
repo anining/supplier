@@ -48,7 +48,7 @@ function SiderComponent ({ collapsed, toggle }) {
     return (
       <Menu karet-lift theme="light" mode="inline" openKeys={U.template(openKeys)} selectedKeys={U.template(selectedKeys)} onClick={menuItemClick} multiple={false}>
         <Menu.Item key="user-manage" icon={<Icon keys="user-manage" />}>
-          用户管理
+          用户主页
         </Menu.Item>
         <Menu.SubMenu onTitleClick={onTitleClick} key="goods" icon={<Icon keys="goods-manage" />} title="商品管理">
           <Menu.Item key="goods">商品列表</Menu.Item>
