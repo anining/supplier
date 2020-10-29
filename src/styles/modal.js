@@ -43,13 +43,13 @@ const styles = {
     width: 170,
     color: '#333',
     marginLeft: 70,
-    marginTop: 31,
+    marginTop: 30,
   },
   closeBtn: {
     height: 40,
     width: 170,
     color: '#333',
-    marginTop: 31,
+    marginTop: 30,
   },
   cancelBtn: {
     height: 40,
@@ -60,12 +60,12 @@ const styles = {
   },
   inputView: {
     color: '#737373',
-    marginTop: 60,
-    marginBottom: 29
+    marginTop: 50,
+    width: 430,
   },
   input: {
-    width: 211,
-    height: 34,
+    width: 360,
+    height: 44,
   },
   popView: {
     fontSize: '0.857rem'

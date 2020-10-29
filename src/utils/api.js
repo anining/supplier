@@ -45,6 +45,8 @@ export function orders (type, oid, table, body) {
       return transformFetch("GET", "/orders", table)
     case "modify":
       return transformFetch("PATCH", `/orders/${oid}`, body);
+    case "modifys":
+      return transformFetch("PATCH", `/orders?${table}`, body);
     default:
       //   return transformFetch("DELETE", `/community-goods-categories/${gid}`);
   }

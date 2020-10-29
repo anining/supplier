@@ -143,3 +143,13 @@ td.ant-table-column-sort {
   background-color:#fff;
   color: #FFC415;
 }
+.ant-modal-body {
+  padding-top: 0;
+}
+
+#root .ant-upload-select-picture-card {
+  margin-bottom: 0;
+  margin-right: 13px;
+  background-color: #FFFAF3;
+  border-color: #FFCB31;
+}

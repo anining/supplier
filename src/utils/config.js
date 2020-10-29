@@ -36,6 +36,25 @@ const PERMISSIONS = {
   cardbiz: '卡密业务'
 }
 
+const REFUND_STATUS = {
+  "a": {
+    color: "rgba(0, 0, 0, 0.65)",
+    text: '-',
+  },
+  closed: {
+    color: "#458BFF",
+    text: '退款中',
+  },
+  completed: {
+    color: "#61BD60",
+    text: '已退款',
+  },
+  processing: {
+    color: "#FF5F5F",
+    text: '已拒绝',
+  },
+}
+
 const ORDER_STATUS = {
   closed: {
     color: "#FF5F5F",
@@ -54,4 +73,4 @@ const ORDER_STATUS = {
     text: '待处理',
   },
 }
-export { API_URL,ORDER_STATUS, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }
+export { REFUND_STATUS, API_URL,ORDER_STATUS, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }
