@@ -1,273 +1,273 @@
 .container {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
-  width: 100%;
-  padding: 0 27px 0 24px;
-  background: #FFF;
-  border-radius: 2px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+    width: 100%;
+    padding: 0 27px 0 24px;
+    background: #FFF;
+    border-radius: 2px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
 .headerL {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  width: calc(100%-122px);
-  height: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: calc(100% - 122px);
+    height: 100%;
 }
 
 .headerBorder {
-  width: 1px;
-  height: 50px;
-  background: rgba(214, 215, 219, 0.55);
-  margin-right: 7%;
-  margin-left: 10%;
+    width: 1px;
+    height: 50px;
+    background: rgba(214, 215, 219, 0.55);
+    margin-right: 7%;
+    margin-left: 10%;
 }
 
 .headerItem {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  height: 110px;
-  width: 251px;
-  padding-top: 23px;
-  color: #6F717E;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 110px;
+    width: 251px;
+    padding-top: 23px;
+    color: #6F717E;
 }
 
 .headerItemImg {
-  width: 22px;
-  margin-right: 8px;
+    width: 22px;
+    margin-right: 8px;
 }
 
 .headerIR {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .headerAddBtn {
-  margin: 35px 0;
-  color: #333;
-  height: 40px;
-  width: 122px;
+    margin: 35px 0;
+    color: #333;
+    height: 40px;
+    width: 122px;
 }
 
 .headerNumber {
-  font-size: 2.142rem;
-  font-weight: 800;
-  color: rgba(0, 0, 0, 0.85);
-  margin-left: 30px;
+    font-size: 2.142rem;
+    font-weight: 800;
+    color: rgba(0, 0, 0, 0.85);
+    margin-left: 30px;
 }
 
 .main {
-  flex: 1;
-  width: 100%;
-  background-color: #fff;
-  border-radius: 2px;
-  margin-top: 24px;
-  padding: 0 24px;
+    flex: 1;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 2px;
+    margin-top: 24px;
+    padding: 0 24px;
 }
 
 .searchView {
-  width: 100%;
+    width: 100%;
 }
 
 .actionView {
-  width: 100%;
-  display: flex;
-  align-items: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .dropdownBtn {
-  width: 7.573%;
-  margin-right: 2.463%;
+    width: 7.573%;
+    margin-right: 2.463%;
 }
 
 .searchBtn {
-  height: 32px;
-  width: 112px;
-  color: #333;
-  align-self: flex-start;
+    height: 32px;
+    width: 112px;
+    color: #333;
+    align-self: flex-start;
 }
 
 .searchInput {
-  height: 32px;
-  margin: 0 40px 24px 0;
-  width: 186px;
-  width: 186px;
-  color: #979BA3;
+    height: 32px;
+    margin: 0 40px 24px 0;
+    width: 186px;
+    width: 186px;
+    color: #979BA3;
 }
 
 .actionBtn {
-  height: 32px;
-  width: 123px;
-  margin: 0 40px 24px 0;
-  color: #979BA3;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
+    height: 32px;
+    width: 123px;
+    margin: 0 40px 24px 0;
+    color: #979BA3;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .actionBtnDelete {
-  height: 32px;
-  width: 123px;
-  color: #979BA3;
-  margin-right: 40px;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
+    height: 32px;
+    width: 123px;
+    color: #979BA3;
+    margin-right: 40px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .searchL {
-  width: calc(100%-212px);
-  display: flex;
-  flex-wrap: wrap;
-  padding: 24px 0 0 0;
-  align-items: center;
-  justify-content: flex-start;
+    width: calc(100% - 212px);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 24px 0 0 0;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .searchR {
-  margin:24px 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+    margin: 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .resetBtn {
-  height: 32px;
-  width: 65px;
-  color: rgba(0, 0, 0, 0.65);
-  border-radius: 2px;
-  margin-right: 35px;
+    height: 32px;
+    width: 65px;
+    color: rgba(0, 0, 0, 0.65);
+    border-radius: 2px;
+    margin-right: 35px;
 }
 
 .action {
-  height: 32px;
-  color: #FFCB31;
-  border-color: #FFCB31;
-  width: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    height: 32px;
+    color: #FFCB31;
+    border-color: #FFCB31;
+    width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.search{
-  /* border-bottom: 1px solid rgba(0,0,0,0.09); */
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+.search {
+    /* border-bottom: 1px solid rgba(0,0,0,0.09); */
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
 }
 
 .hiddenText {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .headerTips {
-  width: 100%;
-  padding: 0 17px;
-  height: 55px;
-  flex-shrink: 0;
-  background-color: #fff;
+    width: 100%;
+    padding: 0 17px;
+    height: 55px;
+    flex-shrink: 0;
+    background-color: #fff;
 }
 
 .headerText {
-  width: 100%;
-  height: 40px;
-  background: #FFFCEB;
-  border-radius: 2px;
-  color: #FF8D30;
-  display: flex;
-  align-items: center;
+    width: 100%;
+    height: 40px;
+    background: #FFFCEB;
+    border-radius: 2px;
+    color: #FF8D30;
+    display: flex;
+    align-items: center;
 }
 
 .tipsImg {
-  width: 14px;
-  margin-right: 8px;
-  margin-left: 17px;
+    width: 14px;
+    margin-right: 8px;
+    margin-left: 17px;
 }
 
 .clickText {
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration: underline #FF8D30;
-  color: #FF8D30;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration: underline #FF8D30;
+    color: #FF8D30;
 }
 
 .dataPicker {
-  height: 32px;
-  width: 348px;
-  margin: 0 40px 24px 0;
+    height: 32px;
+    width: 348px;
+    margin: 0 40px 24px 0;
 }
 
 .noticeHtml {
-  height: 46px;
-  width: 300px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  line-height: 46px;
+    height: 46px;
+    width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 46px;
 }
 
 .itemSelect {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .itemSelectP {
-  width: 256px;
-  height: 34px;
+    width: 256px;
+    height: 34px;
 }
 
 .addonAfter {
-  padding: 0 9px;
-  cursor: pointer;
+    padding: 0 9px;
+    cursor: pointer;
 }
 
 .statusBtn {
-  width: 102px;
-  height: 34px;
-  margin-right: 32px;
+    width: 102px;
+    height: 34px;
+    margin-right: 32px;
 }
 
 .statusModelTitle {
-  color: rgba(0, 0, 0, 0.25);
-  margin: 24px 0 5px 0;
+    color: rgba(0, 0, 0, 0.25);
+    margin: 24px 0 5px 0;
 }
 
 .statusModelTips {
-  margin-top: 32px;
-  color: #333333;
+    margin-top: 32px;
+    color: #333333;
 }
 
 .refundCircle {
-  height: 16px;
-  width: 16px;
-  border: 2px solid #BFBFBF;
-  color: #BFBFBF;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  font-size: 0.857rem;
-  top: 20%;
-  right: -5px;
+    height: 16px;
+    width: 16px;
+    border: 2px solid #BFBFBF;
+    color: #BFBFBF;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    font-size: 0.857rem;
+    top: 20%;
+    right: -5px;
 }
 
 .refundCircle:hover {
-  border-color: #FF7803;
-  color: #FF7803;
+    border-color: #FF7803;
+    color: #FF7803;
 }

@@ -1,34 +1,55 @@
-import React, { useState } from 'react'
-import { Button, Upload, Modal, Switch } from 'antd'
+import React, {useEffect, useState} from 'react'
+import {Button, Upload, Modal, Switch} from 'antd'
 import styles from '../../styles/modal'
 import auth5 from '../../icons/auth/auth5.png'
 import auth13 from '../../icons/auth/auth13.png'
 import auth8 from '../../icons/auth/auth8.png'
 import header1 from '../../icons/header/header1.png'
 import c from '../../styles/user.module.css'
+import {applyStl, getStlDetail} from "../../utils/api"
+import {_toFixed, getPath} from "../../utils/util"
 
-function UserView () {
-  const [visible, setVisible] = useState(false)
+function UserView() {
+  const [visible, setVisible] = useState(false);
+  const [stlData, setStlData] = useState(null);
+  /*LuoYuKun 2020.11.2*/
+  useEffect(() => {
+    _getStlDetail();
+  }, []);
 
-  function handleOk () {
+  async function _getStlDetail() {
+    try {
+      // eslint-disable-next-line no-undef
+      const ret = await getStlDetail();
+      if (ret && ret.data) {
+        // console.log(ret, '==');
+        setStlData(ret.data);
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  /*LuoYuKun 2020.11.2*/
+  function handleOk() {
 
   }
 
-  function handleCancel () {
+  function handleCancel() {
     setVisible(false)
   }
 
-  function onChange () {
+  function onChange() {
 
   }
 
-  function getBase64 (img, callback) {
+  function getBase64(img, callback) {
     // const reader = new FileReader();
     // reader.addEventListener('load', () => callback(reader.result));
     // reader.readAsDataURL(img);
   }
 
-  function handleChange (info) {
+  function handleChange(info) {
     // if (info.file.status === 'uploading') {
     //   this.setState({ loading: true });
     //   return;
@@ -42,9 +63,9 @@ function UserView () {
     //     }),
     //   );
     // }
-  };
+  }
 
-  function beforeUpload (file) {
+  function beforeUpload(file) {
     // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
 
     // if (!isJpgOrPng) {
@@ -57,12 +78,15 @@ function UserView () {
     // return isJpgOrPng && isLt2M;
   }
 
+  const canBeSettled = getPath(['can_be_settled'], stlData, 0);
+  const requested = getPath(['requested'], stlData, 0);
+  const notSettled = getPath(['not_settled'], stlData, 0);
   return (
     <div className="view">
       <div className={c.container}>
         <div className={c.header}>
           <div className={c.headerL}>
-            <img src={header1} alt="" />
+            <img src={header1} alt=""/>
             <div>
               <div className={c.tips}>欢迎您，想喝冰阔泺，祝您开心每一天！</div>
               <div className={c.msg}>上次登录时间：<span>2021.01.01 01:15:23</span></div>
@@ -90,20 +114,28 @@ function UserView () {
             <div className={c.moneySection}>
               <div className={c.moneyView}>
                 <div className={c.balance}>
-                  <div>1342.1255</div>
+                  <div>{_toFixed(canBeSettled - requested)}</div>
                   <div>待结算</div>
                 </div>
-                <div className={c.line} />
+                <div className={c.line}/>
                 <div className={c.balance}>
-                  <div>1342.1255</div>
+                  {/* eslint-disable-next-line no-undef */}
+                  <div>{_toFixed(notSettled - canBeSettled)}</div>
                   <div>冻结中</div>
                 </div>
+                <div className={c.line}/>
+                <div className={c.balance}>
+                  <div>{_toFixed(requested)}</div>
+                  <div>已申请</div>
+                </div>
               </div>
-              <Button className={c.submitBtn} type="primary">申请结算</Button>
+              <Button className={c.submitBtn} type="primary" onClick={() => {
+                setVisible(true)
+              }}>申请结算</Button>
             </div>
             <div className={c.balanceTipsView}>
               <div className={c.closeTipsView}>
-                <img src={auth5} alt="" />
+                <img src={auth5} alt=""/>
                 <div>待结算：可以向商户申请打款结算的数额。</div>
               </div>
               <div className={c.freeze}>冻结中：订单还在售后时间内，不可结算的数额。当订单超过售后时间，订单对应的数额将会从冻结中转入待结算。</div>
@@ -112,7 +144,9 @@ function UserView () {
           <div className={c.mainRight}>
             <div className={c.label}>结算二维码</div>
             <div className={c.qrCodeView}>
-              <img src="https://hbimg.huabanimg.com/e91e62ce14bf9eb8d193193b8f5dace42553220e9baca-Dbx5oU_fw658/format/webp" alt="" className={c.qrImg}/>
+              <img
+                src="https://hbimg.huabanimg.com/e91e62ce14bf9eb8d193193b8f5dace42553220e9baca-Dbx5oU_fw658/format/webp"
+                alt="" className={c.qrImg}/>
               <Upload
                 disabled={true}
                 name="avatar"
@@ -139,12 +173,12 @@ function UserView () {
           <div className={c.label}>供货状态</div>
           <div className={c.statusView}>
             <div>供货状态:</div>
-            <Switch className={c.switch} onChange={onChange} />
+            <Switch className={c.switch} onChange={onChange}/>
             <div>当前状态：</div>
             <div>正常供货</div>
           </div>
           <div className={c.closeTipsView}>
-            <img src={auth5} alt="" />
+            <img src={auth5} alt=""/>
             <div>正常供货：商户可以下单。关闭供货：商户无法可以下单。</div>
           </div>
         </div>
@@ -157,13 +191,27 @@ function UserView () {
         onCancel={handleCancel}
       >
         <div style={styles.view}>
-          <img src={auth8} alt="" style={styles.img} />
+          <img src={auth8} alt="" style={styles.img}/>
           <div style={styles.title}>请确认是否结算？</div>
           <div style={styles.text}>XXX社区申请结算金额：<span style={styles.balance}>12341.12</span>元</div>
           <div style={styles.tips}>请和商户协商后填写，由商户在线下打款给您。</div>
           <div>
-            <Button style={styles.cancelBtn}>取消</Button>
-            <Button type="primary" style={styles.okBtn}>确定</Button>
+            <Button style={styles.cancelBtn} onClick={() => {
+              setVisible(null)
+            }}>取消</Button>
+            <Button type="primary" style={styles.okBtn} onClick={async () => {
+              try {
+                // eslint-disable-next-line no-undef
+                const ret = await applyStl();
+                setVisible(null);
+                console.log(ret)
+                if (ret && !ret.error) {
+
+                }
+              } catch (e) {
+                console.log(e)
+              }
+            }}>确定</Button>
           </div>
         </div>
       </Modal>
