@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Upload, Modal, Switch } from 'antd'
+import { Button, Upload, Modal, Switch, message } from 'antd'
 import styles from '../../styles/modal'
 import auth5 from '../../icons/auth/auth5.png'
 import auth13 from '../../icons/auth/auth13.png'
@@ -10,51 +10,47 @@ import c from '../../styles/user.module.css'
 function UserView () {
   const [visible, setVisible] = useState(false)
 
-  function handleOk () {
-
-  }
-
-  function handleCancel () {
-    setVisible(false)
-  }
-
   function onChange () {
 
   }
 
+  function settlement () {
+    //结算
+  }
+
   function getBase64 (img, callback) {
-    // const reader = new FileReader();
-    // reader.addEventListener('load', () => callback(reader.result));
-    // reader.readAsDataURL(img);
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
   }
 
   function handleChange (info) {
-    // if (info.file.status === 'uploading') {
-    //   this.setState({ loading: true });
-    //   return;
-    // }
-    // if (info.file.status === 'done') {
-    //   // Get this url from response in real world.
-    //   getBase64(info.file.originFileObj, imageUrl =>
-    //     this.setState({
-    //       imageUrl,
-    //       loading: false,
-    //     }),
-    //   );
-    // }
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: true });
+      return;
+    }
+    if (info.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, imageUrl =>
+        this.setState({
+          imageUrl,
+          loading: false,
+        }),
+      );
+    }
   };
 
   function beforeUpload (file) {
-    // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
 
-    // if (!isJpgOrPng) {
-    //   message.error('You can only upload JPG/PNG file!');
-    // }
-    // const isLt2M = file.size / 1024 / 1024 < 2;
-    // if (!isLt2M) {
-    //   message.error('Image must smaller than 2MB!');
-    // }
-    // return isJpgOrPng && isLt2M;
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
   }
 
   return (
@@ -114,7 +110,6 @@ function UserView () {
             <div className={c.qrCodeView}>
               <img src="https://hbimg.huabanimg.com/e91e62ce14bf9eb8d193193b8f5dace42553220e9baca-Dbx5oU_fw658/format/webp" alt="" className={c.qrImg}/>
               <Upload
-                disabled={true}
                 name="avatar"
                 listType="picture-card"
                 className="avatar-uploader"
@@ -151,19 +146,18 @@ function UserView () {
       </div>
       <Modal
         visible={visible}
-        onOk={handleOk}
         footer={null}
         centered={true}
-        onCancel={handleCancel}
+        onCancel={()=>setVisible(false)}
       >
-        <div style={styles.view}>
+        <div style={{...styles.view,...{paddingTop:44}}}>
           <img src={auth8} alt="" style={styles.img} />
           <div style={styles.title}>请确认是否结算？</div>
           <div style={styles.text}>XXX社区申请结算金额：<span style={styles.balance}>12341.12</span>元</div>
           <div style={styles.tips}>请和商户协商后填写，由商户在线下打款给您。</div>
           <div>
-            <Button style={styles.cancelBtn}>取消</Button>
-            <Button type="primary" style={styles.okBtn}>确定</Button>
+            <Button style={styles.cancelBtn} onClick={()=>setVisible(false)}>取消</Button>
+            <Button type="primary" style={styles.okBtn} onClick={()=>settlement}>确定</Button>
           </div>
         </div>
       </Modal>

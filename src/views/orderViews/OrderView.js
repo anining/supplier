@@ -11,7 +11,7 @@ import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
 import { push, getKey, saveSuccess, dateFormat } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
-import { orders, updateOrders } from "../../utils/api"
+import { orders, updateOrders, refundReject, refundAccept } from "../../utils/api"
 import { REFUND_STATUS, ORDER_STATUS } from "../../utils/config"
 
 function OrderView () {
@@ -22,6 +22,7 @@ function OrderView () {
   const [selected, setSelected] = useState()
   const [sel, setSel] = useState([])
   const [refundReason, setRefundReason] = useState()
+  const [refundNum, setRefundNum] = useState()
   const [oid, setOid] = useState({})
   const [data, setData] = useState([])
   const [current, setCurrent] = useState(1)
@@ -38,12 +39,25 @@ function OrderView () {
   const [comment,setComment] = useState()
   const [selectedRows, setSelectRows] = useState([]);
 
+  console.log(oid)
+
   function refund () {
     setVisibleRef(false)
-    orders("modifys", undefined, "ids=" + selected.map(i => i.id).toString(), { status: "" }).then(r => {
+    refundReject(oid.id, refundReason).then(r => {
       if (!r.error) {
         saveSuccess(false)
-        setSelectRows([])
+        setRefundReason(undefined)
+        get(current)
+      }
+    })
+  }
+
+  function refunds () {
+    setVisible(false)
+    refundAccept(oid.id, refundNum).then(r => {
+      if (!r.error) {
+        saveSuccess(false)
+        setRefundNum(undefined)
         get(current)
       }
     })
@@ -62,8 +76,6 @@ function OrderView () {
     setCurrent(page)
     get(page)
   }
-
-  console.log(sel)
 
   function onConfirm () {
 
@@ -224,24 +236,21 @@ function OrderView () {
 }, {
   title: '售后状态',
   align: 'center',
-  dataIndex: 'status',
+  dataIndex: 'refund_status',
   render: (text, record, index) => {
     const { text: t, color } = getKey(text, REFUND_STATUS)
-    if(true){
-      return (
-        <div style={{position:'relative'}}>
-          <div style={{color}}>{t}</div>
+    return (
+      <div style={{display:'flex',alignItems:'center',paddingLeft:19}}>
+          <div style={{color,flexShrink:0}}>{t}</div>
           <Popconfirm
             icon={<img src="" alt="" style={styles.icon}/>}
             placement="bottomRight"
             title={() => <div style={{color:'#FF5F5F',fontSize:'0.857rem',paddingTop:8}}>暂无</div>}
           >
-            <div className={c.refundCircle}>!</div>
-          </Popconfirm>
-        </div>
-      )
-    }
-    return <div style={{color}}>{t}</div>
+          <div style={{opacity:text==="rejected"?1:0}} className={c.refundCircle}>!</div>
+        </Popconfirm>
+      </div>
+    )
   }
 }, {
   title: '售后状态',
@@ -277,7 +286,10 @@ function OrderView () {
         setVisibleS(true)
       }} className={c.clickText}>修改状态</div>
       <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-      <div style={{cursor:'wait'}} className={c.clickText}>退款</div>
+      <div onClick={()=>{
+        setOid(record)
+        setVisible(true)
+      }} className={c.clickText}>退款</div>
       <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
       <div onClick={()=>{
         setOid(record)
@@ -286,8 +298,7 @@ function OrderView () {
       }} className={c.clickText}>加备注</div>
       <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
       <div onClick={()=>{
-        setSel([record])
-        // setSel(selectedRows.map(i => data[i]))
+        setOid(record)
         setVisibleRef(true)
       }} className={c.clickText}>拒绝退款</div>
     </Space>
@@ -538,21 +549,18 @@ function OrderView () {
           <div style={{marginBottom:11}}>
             <div style={styles.refundSelect}>
               <div>退款数量：</div>
-              <div onClick={()=>{
-
-              }} className={c.itemSelect}>
-                <Input className={c.itemSelectP} addonAfter={
-                  <div className={c.addonAfter} onClick={()=>alert((1))}>
-                    全部数量
-                  </div>
-                } placeholder="请在这里输入退款数量"/>
+              <div className={c.itemSelect}>
+                <Input className={c.itemSelectP} addonAfter={<div className={c.addonAfter} onClick={()=>setRefundNum(oid.amount)}>全部数量</div>} value={refundNum} onChange={e=>setRefundNum(e.target.value)} placeholder="请在这里输入退款数量"/>
               </div>
             </div>
             <div style={{color:"#3C3D3C"}}>当前退款商品：<span style={{color:"#ff7600"}}>音符点赞 飞速 (202001051010)</span></div>
           </div>
           <div>
-            <Button style={styles.cancelBtn}>取消</Button>
-            <Button type="primary" style={styles.okBtn}>确定</Button>
+            <Button onClick={()=>{
+              setRefundReason(undefined)
+              setVisible(false)
+            }} style={styles.cancelBtn}>取消</Button>
+            <Button type="primary" onClick={refunds} style={styles.okBtn}>确定</Button>
           </div>
         </div>
       </Modal>
@@ -570,7 +578,7 @@ function OrderView () {
             拒绝退款
           </div>
           <div style={styles.inputView}>拒绝原因：<Input value={refundReason} onChange={e=>setRefundReason(e.target.value)} placeholder="请输入拒绝原因（选填）" style={styles.input}/></div>
-          <div style={{...styles.inputView,...{paddingLeft: 70,marginTop: 6}}}>当前选中订单：<span style={{color:"#FF7600"}}>{ sel.map(i => i.goods_name).join('、')  || ''}</span></div>
+          <div style={{...styles.inputView,...{paddingLeft: 70,marginTop: 6}}}>当前选中订单：<span style={{color:"#FF7600"}}>{ oid.goods_name || ''}</span></div>
           <div>
             <Button onClick={()=>{
               setRefundReason(undefined)

@@ -37,19 +37,19 @@ const PERMISSIONS = {
 }
 
 const REFUND_STATUS = {
-  "a": {
+  "-": {
     color: "rgba(0, 0, 0, 0.65)",
     text: '-',
   },
-  closed: {
+  refunding: {
     color: "#458BFF",
     text: '退款中',
   },
-  completed: {
+  refunded: {
     color: "#61BD60",
     text: '已退款',
   },
-  processing: {
+  rejected: {
     color: "#FF5F5F",
     text: '已拒绝',
   },

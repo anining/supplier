@@ -3,7 +3,7 @@ import c from '../../styles/edit.module.css'
 import { Input, InputNumber, Button, Radio, Breadcrumb, message } from 'antd'
 import ReactQuill from 'react-quill';
 import good5 from '../../icons/good/good5.png'
-import { goBack, saveSuccess, push } from "../../utils/util";
+import { goBack, saveSuccess, push, regexNumber } from "../../utils/util";
 import { goods } from "../../utils/api";
 import { useHistory } from "react-router-dom";
 import { MODULES } from "../../utils/config";
@@ -12,7 +12,7 @@ let win
 
 function EditGoodsView () {
   const { state = {} } = useHistory().location
-  const { id, intro: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n, providing, refund_type, refund_period, status: s = "available", unit: u, price: u_p } = state
+  const { id, intro: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n="", providing, refund_type, refund_period, status: s = "available", unit: u, price: u_p } = state
   const h = useHistory()
   const [name, setName] = useState(n)
   const [value, setValue] = useState(refund_period)
@@ -50,7 +50,7 @@ function EditGoodsView () {
       status,
       ptpl_id: provider_param_template_id,
       intro: introduction,
-      refund_method: refund_method ? { refund_type: refund_method, refund_period: value } : refund_method,
+      refund_method: refund_method ? { refund_type: refund_method, refund_period: value*24*3600 } : refund_method,
       min_order_amount: min_order_amount || 1,
       max_order_amount: max_order_amount || 100000,
       price: unit_price,
@@ -105,7 +105,9 @@ function EditGoodsView () {
             <span>*</span>
             <div className={c.itemText}>商品名称</div>
           </div>
-          <Input maxLength={40} placeholder="请输入商品名称" onChange={e=>setName(e.target.value)} value={name} className={c.itemInput}></Input>
+          <Input maxLength={40} placeholder="请输入商品名称" onChange={e=>{
+            setName(regexNumber(e.target.value))
+          }} value={name} className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>

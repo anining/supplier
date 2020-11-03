@@ -50,6 +50,16 @@ function formatMoney (money) {
   return money.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
+function regexNumber (e, float) {
+  const regex = /[^\d]/g
+  const floatRegex = /[^\d.]/g
+
+  if (float) {
+    return e.replace(floatRegex, "")
+  }
+  return e.replace(regex, "")
+}
+
 function dateFormat (date, format) {
   date = new Date(date);
   var o = {
@@ -72,4 +82,4 @@ function dateFormat (date, format) {
   return format;
 }
 
-export {formatMoney, dateFormat, getSimpleText, getKey, saveSuccess, transformTime, goBack, push }
+export {regexNumber, formatMoney, dateFormat, getSimpleText, getKey, saveSuccess, transformTime, goBack, push }
