@@ -243,7 +243,7 @@ function RTable () {
       render: (text, record, index) => {
         const { refund_type, refund_period } = record
         if (refund_type) {
-          return `${refund_type==='after_started'?"下单":"完成"}${refund_period}日内`
+          return `${refund_type==='after_started'?"下单":"完成"}${refund_period/3600/24}日内`
         }
         return "不允许退款"
       }

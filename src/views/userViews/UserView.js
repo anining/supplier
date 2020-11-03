@@ -7,21 +7,34 @@ import auth8 from '../../icons/auth/auth8.png'
 import header1 from '../../icons/header/header1.png'
 import c from '../../styles/user.module.css'
 import {applyStl, getStlDetail} from "../../utils/api"
-import {_toFixed, getPath} from "../../utils/util"
+import {_toFixed, getPath, saveSuccess} from "../../utils/util"
 
 function UserView() {
   const [visible, setVisible] = useState(false);
-  const [stlData, setStlData] = useState(null);
+  const [stlData, setStlData] = useState({});
+
   useEffect(() => {
-    _getStlDetail();
+    getDetail()
   }, []);
+
+  function getDetail () {
+    getStlDetail().then(r=>{
+      !r.error && setStlData(r.data)
+    })
+  }
 
   function onChange () {
 
   }
 
   function settlement () {
-    //结算
+    setVisible(false)
+    applyStl().then(r=>{
+      if (!r.error) {
+        saveSuccess(false)
+        getDetail()
+      }
+    });
   }
 
   function getBase64 (img, callback) {
@@ -44,21 +57,22 @@ function UserView() {
         }),
       );
     }
-  };
+  }
 
   function beforeUpload (file) {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  async function _getStlDetail() {
-    try {
-      // eslint-disable-next-line no-undef
-      const ret = await getStlDetail();
-      if (ret && ret.data) {
-        // console.log(ret, '==');
-        setStlData(ret.data);
-      }
-    } catch (e) {
-      console.log(e)
-    }
+    // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    // async function _getStlDetail() {
+    //   try {
+    //     // eslint-disable-next-line no-undef
+    //     const ret = await getStlDetail();
+    //     if (ret && ret.data) {
+    //       // console.log(ret, '==');
+    //       setStlData(ret.data);
+    //     }
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }
   }
 
   /*LuoYuKun 2020.11.2*/
@@ -97,8 +111,7 @@ function UserView() {
   }
 
   function beforeUpload(file) {
-    // const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!');
     }
@@ -150,7 +163,6 @@ function UserView() {
                 </div>
                 <div className={c.line}/>
                 <div className={c.balance}>
-                  {/* eslint-disable-next-line no-undef */}
                   <div>{_toFixed(notSettled - canBeSettled)}</div>
                   <div>冻结中</div>
                 </div>
@@ -160,9 +172,7 @@ function UserView() {
                   <div>已申请</div>
                 </div>
               </div>
-              <Button className={c.submitBtn} type="primary" onClick={() => {
-                setVisible(true)
-              }}>申请结算</Button>
+              <Button className={c.submitBtn} type="primary" onClick={() => setVisible(true)}>申请结算</Button>
             </div>
             <div className={c.balanceTipsView}>
               <div className={c.closeTipsView}>
@@ -176,7 +186,7 @@ function UserView() {
             <div className={c.label}>结算二维码</div>
             <div className={c.qrCodeView}>
               <img
-                src="https://hbimg.huabanimg.com/e91e62ce14bf9eb8d193193b8f5dace42553220e9baca-Dbx5oU_fw658/format/webp"
+                src="https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
                 alt="" className={c.qrImg}/>
               <Upload
                 name="avatar"
@@ -221,36 +231,19 @@ function UserView() {
       >
         <div style={{...styles.view,...{paddingTop:44}}}>
           <img src={auth8} alt="" style={styles.img} />
-        <div style={styles.view}>
-          <img src={auth8} alt="" style={styles.img}/>
-          <div style={styles.title}>请确认是否结算？</div>
-          <div style={styles.text}>XXX社区申请结算金额：<span style={styles.balance}>12341.12</span>元</div>
-          <div style={styles.tips}>请和商户协商后填写，由商户在线下打款给您。</div>
-          <div>
-            <Button style={styles.cancelBtn} onClick={()=>setVisible(false)}>取消</Button>
-            <Button type="primary" style={styles.okBtn} onClick={()=>settlement}>确定</Button>
-            <Button style={styles.cancelBtn} onClick={() => {
-              setVisible(null)
-            }}>取消</Button>
-            <Button type="primary" style={styles.okBtn} onClick={async () => {
-              try {
-                // eslint-disable-next-line no-undef
-                const ret = await applyStl();
-                setVisible(null);
-                console.log(ret)
-                if (ret && !ret.error) {
-
-                }
-              } catch (e) {
-                console.log(e)
-              }
-            }}>
-            确定
-            </Button>
+          <div style={styles.view}>
+            <img src={auth8} alt="" style={styles.img}/>
+            <div style={styles.title}>请确认是否结算？</div>
+            <div style={styles.text}>XXX社区申请结算金额：<span style={styles.balance}>{_toFixed(canBeSettled - requested)}</span>元</div>
+            <div style={styles.tips}>请和商户协商后填写，由商户在线下打款给您。</div>
+            <div>
+              <Button style={styles.cancelBtn} onClick={()=>setVisible(false)}>取消</Button>
+              <Button type="primary" style={styles.okBtn} onClick={settlement}>确定</Button>
+            </div>
           </div>
         </div>
       </Modal>
-    </div>
+  </div>
   )
 }
 

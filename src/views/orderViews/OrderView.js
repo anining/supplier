@@ -20,7 +20,6 @@ function OrderView () {
   const [visibleRemark, setVisibleRemark] = useState(false)
   const [visibleRef, setVisibleRef] = useState(false)
   const [selected, setSelected] = useState()
-  const [sel, setSel] = useState([])
   const [refundReason, setRefundReason] = useState()
   const [refundNum, setRefundNum] = useState()
   const [oid, setOid] = useState({})
@@ -38,8 +37,6 @@ function OrderView () {
   const [actionLoading, setActionLoading] = useState(false)
   const [comment,setComment] = useState()
   const [selectedRows, setSelectRows] = useState([]);
-
-  console.log(oid)
 
   function refund () {
     setVisibleRef(false)
@@ -75,14 +72,6 @@ function OrderView () {
   function onChange (page, pageSize) {
     setCurrent(page)
     get(page)
-  }
-
-  function onConfirm () {
-
-  }
-
-  function onCancel () {
-
   }
 
   const rowSelection = {
@@ -162,7 +151,7 @@ function OrderView () {
         dataIndex: 'amount',
   },
       {
-        title: '订单数量',
+        title: '订单金额',
         align: 'center',
         dataIndex: 'disc_price',
         render: (text, record, index) => {
@@ -180,23 +169,22 @@ function OrderView () {
         align: 'center',
         render: (text, record, index) => {
           return (
-            <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
-          }
-          placement = "leftTop"
-          title = {
-              () => {
-                return (
-                  <div style={styles.popView}>
-                    <div style={styles.popTitle}>下单信息：</div>
-                      {
-                        record.args ? Object.keys(JSON.parse(record.args || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.args || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
-                      }
-                </div>
-                )
-              }
-            } >
-            <div>查看详情</div> <
-            /Popconfirm>
+            <Popconfirm icon={<img src="" alt="" style={styles.icon}/>}
+              placement = "leftTop"
+              title = {
+                  () => {
+                    return (
+                      <div style={styles.popView}>
+                        <div style={styles.popTitle}>下单信息：</div>
+                          {
+                            record.args ? Object.keys(JSON.parse(record.args || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.args || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
+                          }
+                    </div>
+                    )
+                  }
+                } >
+                <div>查看详情</div> <
+                /Popconfirm>
         )
       }
     },
@@ -206,23 +194,22 @@ function OrderView () {
       dataIndex: 'disc_price',
       render: (text, record, index) => {
         return (
-          <Popconfirm icon={<img src="" alt="" style={styles.icon}/>
-        }
-        placement = "leftTop"
-        title = {
-            () => {
-              return (
-                <div style={styles.popView}>
-                  <div style={styles.popTitle}>扩展信息：</div>
-                    {
-                      record.extras ? Object.keys(JSON.parse(record.extras || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.extras || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
-                    }
-              </div>
-              )
-            }
-          } >
-          <div>查看详情</div> <
-          /Popconfirm>
+          <Popconfirm icon={<img src="" alt="" style={styles.icon}/>}
+            placement = "leftTop"
+            title = {
+              () => {
+                return (
+                  <div style={styles.popView}>
+                    <div style={styles.popTitle}>扩展信息：</div>
+                      {
+                        record.extras ? Object.keys(JSON.parse(record.extras || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.extras || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
+                      }
+                </div>
+                )
+              }
+            } >
+            <div>查看详情</div>
+          </Popconfirm>
       )
     }
 }, {
@@ -241,25 +228,19 @@ function OrderView () {
     const { text: t, color } = getKey(text, REFUND_STATUS)
     return (
       <div style={{display:'flex',alignItems:'center',paddingLeft:19}}>
-          <div style={{color,flexShrink:0}}>{t}</div>
-          <Popconfirm
-            icon={<img src="" alt="" style={styles.icon}/>}
-            placement="bottomRight"
-            title={() => <div style={{color:'#FF5F5F',fontSize:'0.857rem',paddingTop:8}}>暂无</div>}
-          >
+        <div style={{color,flexShrink:0}}>{t}</div>
+        <Popconfirm
+          icon={<img src="" alt="" style={styles.icon}/>}
+          placement="bottomRight"
+          title={() => <div style={{color:'#FF5F5F',fontSize:'0.857rem',paddingTop:8}}>{t}</div>}
+        >
           <div style={{opacity:text==="rejected"?1:0}} className={c.refundCircle}>!</div>
         </Popconfirm>
       </div>
     )
   }
-}, {
-  title: '售后状态',
-  align: 'center',
-  dataIndex: 'disc_price',
-  render: (text, record, index) => {
-    return '-'
-  }
-}, {
+},
+  {
   title: '结算状态',
   align: 'center',
   dataIndex: 'disc_price',
@@ -279,30 +260,47 @@ function OrderView () {
 }, {
   title: '操作',
   align: 'center',
-  render: (text, record, index) => (
-    <Space size="small">
-      <div onClick={()=>{
-        setOid(record)
-        setVisibleS(true)
-      }} className={c.clickText}>修改状态</div>
-      <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-      <div onClick={()=>{
-        setOid(record)
-        setVisible(true)
-      }} className={c.clickText}>退款</div>
-      <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-      <div onClick={()=>{
-        setOid(record)
-        setVisibleRemark(true)
-        setComment(record.comment)
-      }} className={c.clickText}>加备注</div>
-      <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-      <div onClick={()=>{
-        setOid(record)
-        setVisibleRef(true)
-      }} className={c.clickText}>拒绝退款</div>
-    </Space>
-  )
+  render: (text, record, index) => {
+    const { refund_status, status } = record
+
+    return (
+      <Space size="small">
+        { status==="processing"?
+          <>
+            <div onClick={()=>{
+              setOid(record)
+              setVisibleS(true)
+            }} className={c.clickText}>修改状态</div>
+            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+          </>:null
+        }
+        { status==="processing"?
+          <>
+            <div onClick={()=>{
+              setOid(record)
+              setVisibleRemark(true)
+              setComment(record.comment)
+            }} className={c.clickText}>加备注</div>
+            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+          </>:null
+        }
+        { refund_status==="refunding"?
+          <>
+            <div onClick={()=>{
+              setOid(record)
+              setVisible(true)
+            }} className={c.clickText}>退款</div>
+            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+            <div onClick={()=>{
+              setOid(record)
+              setVisibleRef(true)
+            }} className={c.clickText}>拒绝退款</div>
+          </>:null
+        }
+        { refund_status!=="refunding" && status !== "processing" ? "-" : null}
+      </Space>
+    )
+  }
 },
 ];
 
@@ -426,7 +424,7 @@ function OrderView () {
                   <Input value={order_id} onPressEnter={()=>get(current)} onChange={e=>setOrder_id(e.target.value)} placeholder="请输入订单编号" size="small" className={c.searchInput}/>
                   <Input value={goods_name} onPressEnter={()=>get(current)} onChange={e=>setGoods_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
                   <DropdownComponent action={status} setAction={setStatus} keys={[{name:"待处理",key:"pending"},{name:"进行中",key:"processing"},{name:"已完成",key:"completed"},{name:"已终止",key:"closed"}]} placeholder="请选择订单状态" style={{width:186}}/>
-                  <DropdownComponent action={refund_status} setAction={setRefund_status} keys={[{name:"已退款",key:"closed"},{name:"退款中",key:"refunding"}]} placeholder="请选择售后状态" style={{width:186}}/>
+                  <DropdownComponent action={refund_status} setAction={setRefund_status} keys={[{name:"退款中",key:"refunding"},{name:"已退款",key:"refunded"},{name:"已拒绝",key:"rejected"}]} placeholder="请选择售后状态" style={{width:186}}/>
                   {/* <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择结算状态" style={{width:186}}/> */}
                   <DatePicker.RangePicker
                     format="YYYY-MM-DD"
@@ -511,11 +509,11 @@ function OrderView () {
             <div className={c.statusModelTips}>选中订单：{oid.id}    订单状态：<span style={{color}}>{t}</span></div>
             <div className={c.statusModelTitle}>修改为</div>
             <div>
-              <Button className={c.statusBtn} onClick={()=>setSelected("processing")} style={{
-                color:selected==="processing"?"#FFC415":"rgba(0, 0, 0, 0.25)",
-                background:selected==="processing"?"#FFFAEB":"#fff",
-                borderColor:selected==="processing"?"#FFCB31":"rgba(0, 0, 0, 0.15)",
-              }}>进行中</Button>
+              {/* <Button classname={c.statusbtn} onclick={()=>setselected("processing")} style={{ */}
+              {/*   color:selected==="processing"?"#ffc415":"rgba(0, 0, 0, 0.25)", */}
+              {/*   background:selected==="processing"?"#FFFAEB":"#fff", */}
+              {/*   borderColor:selected==="processing"?"#FFCB31":"rgba(0, 0, 0, 0.15)", */}
+              {/* }}>进行中</Button> */}
               <Button className={c.statusBtn} onClick={()=>setSelected("completed")} style={{
                 color:selected==="completed"?"#FFC415":"rgba(0, 0, 0, 0.25)",
                 background:selected==="completed"?"#FFFAEB":"#fff",

@@ -7,6 +7,7 @@ const ERROR_MSG = {
   "incorrect_user_or_password": "账号或者密码错误",
   "tag_exists": "重复的标签名称",
   "token_expired": "登录过期",
+  "repeated_request": "重复提交",
   "incorrect_old_password":"原密码错误"
 }
 

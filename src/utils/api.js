@@ -52,6 +52,11 @@ export function orders(type, oid, table, body) {
     }
 }
 
+//订单拒绝退款
+export function refundReject (id,reason) {
+  return transformFetch("PUT", `/orders/${id}/refund/reject`, {reason})
+}
+
 // 更新订单
 export function updateOrders(oid, body) {
     return transformFetch("PATCH", `/orders/${oid}`, body)
@@ -60,11 +65,6 @@ export function updateOrders(oid, body) {
 //订单同意退款
 export function refundAccept (id,amount) {
   return transformFetch("PUT", `/orders/${id}/refund/accept`, {amount})
-}
-
-//订单拒绝退款
-export function refundReject (id,reason) {
-  return transformFetch("PUT", `/orders/${id}/refund/reject`, {reason})
 }
 
 // 获取结算明细

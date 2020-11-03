@@ -60,7 +60,6 @@ function regexNumber (e, float) {
   return e.replace(regex, "")
 }
 
-function dateFormat (date, format) {
 function dateFormat(date, format) {
   date = new Date(date);
   var o = {
@@ -115,10 +114,10 @@ function getPath(path, obj, defaultValue) {
 
 function _toFixed(number, num = 2) {
   try {
-    return Number(number).toFixed(num);
+    return Number(number).toFixed(num)
   } catch (e) {
-    return 0;
+    return 0
   }
 }
 
-export {regexNumber, formatMoney, dateFormat, getSimpleText, getKey, saveSuccess, transformTime, goBack, push }
+export { _toFixed, getPath, regexNumber, formatMoney, dateFormat, getSimpleText, getKey, saveSuccess, transformTime, goBack, push }

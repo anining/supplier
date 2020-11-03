@@ -264,18 +264,7 @@
   font-size: 0.1rem;
   flex-shrink: 0;
   margin-left: 3px;
-  height: 16px;
-  width: 16px;
-  border: 2px solid #BFBFBF;
-  color: #BFBFBF;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
   font-size: 0.857rem;
-  top: 20%;
-  right: -5px;
 }
 
 .refundCircle:hover {
