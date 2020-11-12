@@ -8,6 +8,7 @@ import { paramTemplates } from "../../utils/api";
 import DropdownComponent from '../../components/DropdownComponent'
 import { push, transformTime, saveSuccess } from "../../utils/util";
 import styles from "../../styles/modal"
+import ActionComponent from '../../components/ActionComponent'
 
 function OrderModelView () {
   const [visible, setVisible] = useState(false)
@@ -102,29 +103,26 @@ function RTable () {
     {
       title: '模型编号',
       dataIndex: 'id',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '模型名称',
       dataIndex: 'name',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '包含参数',
-      align: 'center',
+			ellipsis: true,
       dataIndex: 'used_by',
   },
     {
       title: '创建时间',
       dataIndex: 'time',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '操作',
-      align: 'center',
-      render: (text, record, index) => (
-        <div className={c.clickText} onClick={()=>push('/main/edit-order-model',record)}>编辑模型</div>
-      )
+      render: (text, record, index) => <div className={c.clickText} onClick={()=>push('/main/edit-order-model',record)}>编辑模型</div>
     },
   ];
 
@@ -177,7 +175,7 @@ function RTable () {
             </div>
           </div>
       </div>
-      <DropdownComponent selectedRows={selectedRows} submit={submit} keys={[]}/>
+			<ActionComponent selectedRows={selectedRows} setSelectRows={setSelectRows} submit={submit} keys={[]}/>
       <Table
         columns={columns}
         rowSelection={{

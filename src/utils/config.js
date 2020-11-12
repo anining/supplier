@@ -35,42 +35,56 @@ const PERMISSIONS = {
   commbiz: '社区业务',
   cardbiz: '卡密业务'
 }
-
 const REFUND_STATUS = {
   "-": {
-    color: "rgba(0, 0, 0, 0.65)",
+		status: "default",
     text: '-',
   },
   refunding: {
+		status: "processing",
     color: "#458BFF",
     text: '退款中',
   },
   refunded: {
-    color: "#61BD60",
+		status: "success",
     text: '已退款',
   },
   rejected: {
-    color: "#FF5F5F",
+		status: "error",
     text: '已拒绝',
   },
 }
-
 const ORDER_STATUS = {
   closed: {
-    color: "#FF5F5F",
+		status: "error",
     text: '已终止',
   },
   completed: {
-    color: "#61BD60",
+		status: "success",
     text: '已完成',
   },
   processing: {
-    color: "#458BFF",
+		status: "processing",
     text: '进行中',
   },
   pending: {
-    color: "#FF7600",
+		status: "warning",
     text: '待处理',
-  },
+  }
 }
-export { REFUND_STATUS, API_URL,ORDER_STATUS, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }
+const PLACE_ORDER_STATUS = {
+	unavailable: {
+		status: "error",
+		text: '关闭下单',
+	},
+	available: {
+		status: "default",
+		text: '正常下单',
+	},
+	paused: {
+		status: "default",
+		text: '暂停下单',
+	}
+}
+const SCROLL = {x:"120%"}
+export { PLACE_ORDER_STATUS, SCROLL, REFUND_STATUS, API_URL,ORDER_STATUS, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }

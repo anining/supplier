@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/modal'
-import { Button, Space, Modal, Table, Input } from 'antd'
+import { Badge, Button, Space, Modal, Table, Input } from 'antd'
 import good1 from '../../icons/good/good1.png'
 import c from '../../styles/view.module.css'
 import good2 from '../../icons/good/good2.png'
@@ -11,9 +11,11 @@ import auth10 from '../../icons/auth/auth10.png'
 import auth11 from '../../icons/auth/auth11.png'
 import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
+import ActionComponent from "../../components/ActionComponent";
 import { push, getKey, getSimpleText } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
 import { goods } from "../../utils/api"
+import { SCROLL, PLACE_ORDER_STATUS } from "../../utils/config"
 
 
 function GoodsView () {
@@ -202,44 +204,30 @@ function RTable () {
     setStatus(undefined)
   }
 
-  const obj = {
-    unavailable: {
-      color: "#FF5F5F",
-      text: '关闭下单',
-    },
-    available: {
-      color: "rgba(0, 0, 0, 0.65)",
-      text: '正常下单',
-    },
-    paused: {
-      color: "rgba(0, 0, 0, 0.65)",
-      text: '暂停下单',
-    },
-  }
   const columns = [
     {
       title: '商品编号',
       dataIndex: 'id',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '商品名称',
       dataIndex: 'name',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '单价',
       dataIndex: 'price',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '单位',
       dataIndex: 'unit',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '退款时限',
-      align: 'center',
+			ellipsis: true,
       render: (text, record, index) => {
         const { refund_type, refund_period } = record
         if (refund_type) {
@@ -250,45 +238,44 @@ function RTable () {
   },
     {
       title: '供货状态',
-      align: 'center',
       dataIndex: 'providing',
-      render: (text, record, index) => {
-        return <div style={{color:text?"#458BFF":"#FF7600"}}>{text?"正在供货":"待供货"}</div>
-      }
+			ellipsis: true,
+      render: (text, record, index) => <Badge status={text?"processing":"warning"} text={text?"正在供货":"待供货"}/>
   },
     {
       title: '最低下单',
-      align: 'center',
       dataIndex: 'min_order_amount',
+			ellipsis: true,
   },
     {
       title: '最高下单',
-      align: 'center',
       dataIndex: 'max_order_amount',
+			ellipsis: true,
   },
     {
       title: '下单状态',
-      align: 'center',
       dataIndex: 'status',
+			ellipsis: true,
       render: (text, record, index) => {
-        const { text: t, color } = getKey(text, obj)
-        return <div style={{color}}>{t}</div>
+        const { text: t, status } = getKey(text, PLACE_ORDER_STATUS)
+				return <div><Badge status={status} />{t}</div>
       }
   },
     {
       title: '商品说明',
-      align: 'center',
-      width: 300,
+			ellipsis: true,
       dataIndex: 'intro',
       render: (text, record, index) => <div className={c.noticeHtml}>{getSimpleText(text)}</div>
   },
     {
-      title: '操作',
-      align: 'center',
+			title: () => <span style={{marginLeft:32}}>操作</span>,
+			width: 209,
+			fixed: 'right',
+			ellipsis: true,
       render: (text, record, index) => (
-        <Space size="small">
+				<Space size="small" className={c.space}>
           <div style={{cursor:'wait'}} className={c.clickText} onClick={()=>{}}>修改商品</div>
-          <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+          <div className={c.line} />
           <div style={{cursor:'wait'}} className={c.clickText}>修改价格</div>
         </Space>
       )
@@ -318,13 +305,14 @@ function RTable () {
             </div>
         </div>
       </div>
-      <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[]}/>
+			<ActionComponent selectedRows={selectedRows} setSelectRows={setSelectRows} submit={submit} keys={[]}/>
       <Table
         columns={columns}
         rowSelection={{
           ...rowSelection
         }}
         dataSource={data}
+				scroll={SCROLL}
         size="small"
         pagination={{
           showQuickJumper:true,

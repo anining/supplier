@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/modal'
-import { Button, Popconfirm, Space, DatePicker, Modal, Table, Input, message } from 'antd'
+import { Badge, Button, Popconfirm, Space, DatePicker, Modal, Table, Input, message } from 'antd'
 import good10 from '../../icons/good/good10.png'
 import c from '../../styles/view.module.css'
 import good11 from '../../icons/good/good11.png'
@@ -12,7 +12,8 @@ import DropdownComponent from "../../components/DropdownComponent";
 import { push, getKey, saveSuccess, dateFormat } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
 import { orders, updateOrders, refundReject, refundAccept } from "../../utils/api"
-import { REFUND_STATUS, ORDER_STATUS } from "../../utils/config"
+import { REFUND_STATUS, ORDER_STATUS, SCROLL } from "../../utils/config"
+import ActionComponent from '../../components/ActionComponent'
 
 function OrderView () {
   const [visible, setVisible] = useState(false)
@@ -138,59 +139,52 @@ function OrderView () {
       {
         title: '订单编号',
         dataIndex: 'id',
-        align: 'center',
+				ellipsis: true,
   },
       {
         title: '商品名称',
         dataIndex: 'goods_name',
-        align: 'center',
+				ellipsis: true,
   },
       {
         title: '下单数量',
-        align: 'center',
+				ellipsis: true,
         dataIndex: 'amount',
   },
       {
         title: '订单金额',
-        align: 'center',
+				ellipsis: true,
         dataIndex: 'disc_price',
-        render: (text, record, index) => {
-          return '-'
-        }
   },
       {
         title: '备注',
-        align: 'center',
         dataIndex: 'comment',
+				ellipsis: true,
         render: (text, record, index) => <div className={c.noticeHtml}>{text}</div>
   },
       {
         title: '下单信息',
-        align: 'center',
-        render: (text, record, index) => {
-          return (
-            <Popconfirm icon={<img src="" alt="" style={styles.icon}/>}
-              placement = "leftTop"
-              title = {
-                  () => {
-                    return (
-                      <div style={styles.popView}>
-                        <div style={styles.popTitle}>下单信息：</div>
-                          {
-                            record.args ? Object.keys(JSON.parse(record.args || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.args || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
-                          }
-                    </div>
-                    )
-                  }
-                } >
-                <div>查看详情</div> <
-                /Popconfirm>
-        )
-      }
-    },
-    {
+				ellipsis: true,
+        render: (text, record, index) => (
+					<Popconfirm icon={<img src="" alt="" style={styles.icon}/>}
+						placement="leftTop"
+						title={
+							() => (
+								<div style={styles.popView}>
+									<div style={styles.popTitle}>下单信息：</div>
+										{
+											record.args ? Object.keys(JSON.parse(record.args || "{}")).map(i=><div key={i} style={styles.popText}>{i}：<span>{JSON.parse(record.args || "{}")[i]}</span></div>) : <div style={styles.popText}>暂无</div>
+										}
+									</div>
+							)
+						}>
+						<div className={c.view_text}>查看</div> 
+					</Popconfirm>
+				)
+	},
+			{
       title: '扩展信息',
-      align: 'center',
+			ellipsis: true,
       dataIndex: 'disc_price',
       render: (text, record, index) => {
         return (
@@ -208,101 +202,86 @@ function OrderView () {
                 )
               }
             } >
-            <div>查看详情</div>
+						<div className={c.view_text}>查看</div> 
           </Popconfirm>
       )
     }
-}, {
-  title: '订单状态',
-  align: 'center',
-  dataIndex: 'status',
-  render: (text, record, index) => {
-    const { text: t, color } = getKey(text, ORDER_STATUS)
-    return <div style={{color}}>{t}</div>
-  }
-}, {
-  title: '售后状态',
-  align: 'center',
-  dataIndex: 'refund_status',
-  render: (text, record, index) => {
-    const { text: t, color } = getKey(text, REFUND_STATUS)
-    return (
-      <div style={{display:'flex',alignItems:'center',paddingLeft:19}}>
-        <div style={{color,flexShrink:0}}>{t}</div>
-        <Popconfirm
-          icon={<img src="" alt="" style={styles.icon}/>}
-          placement="bottomRight"
-          title={() => <div style={{color:'#FF5F5F',fontSize:'0.857rem',paddingTop:8}}>{t}</div>}
-        >
-          <div style={{opacity:text==="rejected"?1:0}} className={c.refundCircle}>!</div>
-        </Popconfirm>
-      </div>
-    )
-  }
-},
-  {
-  title: '结算状态',
-  align: 'center',
-  dataIndex: 'disc_price',
-  render: (text, record, index) => {
-    return '-'
-  }
-}, {
-  title: '订单历程',
-  align: 'center',
-  render: (text, record, index) => {
-    return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
-  }
-}, {
-  title: '下单时间',
-  align: 'center',
-  dataIndex: 'time',
-}, {
-  title: '操作',
-  align: 'center',
-  render: (text, record, index) => {
-    const { refund_status, status } = record
-
-    return (
-      <Space size="small">
-        { status==="processing"?
-          <>
-            <div onClick={()=>{
-              setOid(record)
-              setVisibleS(true)
-            }} className={c.clickText}>修改状态</div>
-            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-          </>:null
-        }
-        { status==="processing"?
-          <>
-            <div onClick={()=>{
-              setOid(record)
-              setVisibleRemark(true)
-              setComment(record.comment)
-            }} className={c.clickText}>加备注</div>
-            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-          </>:null
-        }
-        { refund_status==="refunding"?
-          <>
-            <div onClick={()=>{
-              setOid(record)
-              setVisible(true)
-            }} className={c.clickText}>退款</div>
-            <div style={{height:14,width:1,background:'#D8D8D8'}}></div>
-            <div onClick={()=>{
-              setOid(record)
-              setVisibleRef(true)
-            }} className={c.clickText}>拒绝退款</div>
-          </>:null
-        }
-        { refund_status!=="refunding" && status !== "processing" ? "-" : null}
-      </Space>
-    )
-  }
-},
-];
+	}, {
+		title: '订单状态',
+		ellipsis: true,
+		dataIndex: 'status',
+		render: (text, record, index) => {
+			const { text: t, status} = getKey(text, ORDER_STATUS)
+			return <div><Badge status={status} />{t}</div>
+		}
+	}, 
+		{
+			title: '售后状态',
+			ellipsis: true,
+			dataIndex: 'refund_status',
+			render: (text, record, index) => {
+				const { text: t, status } = getKey(text, REFUND_STATUS)
+				return (
+					<Popconfirm
+						icon={<img src="" alt="" style={styles.icon}/>}
+						placement="bottomRight"
+						title={() => <div style={{color:'#FF5F5F',fontSize:'0.857rem',paddingTop:8}}>{t}</div>}
+					>
+						<div><Badge status={status} />{t}</div>
+					</Popconfirm>
+				)
+			}
+	},
+		{
+			title: '结算状态',
+			ellipsis: true,
+			dataIndex: 'disc_price',
+	}, 
+		{
+			title: '订单历程',
+			ellipsis: true,
+			render: (text, record, index) => {
+				return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
+			}
+	}, 
+		{
+			title: '下单时间',
+			dataIndex: 'time',
+			ellipsis: true,
+	}, 
+		{
+			title: () => <span style={{marginLeft:32}}>操作</span>,
+			width: 355,
+			fixed: 'right',
+			render: (text, record, index) => {
+				const { refund_status, status } = record
+				return (
+					<Space size="small" className={c.space}>
+						<div onClick={()=>{
+							setOid(record)
+							setVisibleS(true)
+						}} className={c.clickText}>修改状态</div>
+						<div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+						<div onClick={()=>{
+							setOid(record)
+							setVisibleRemark(true)
+							setComment(record.comment)
+						}} className={c.clickText}>添加备注</div>
+						<div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+						<div onClick={()=>{
+							setOid(record)
+							setVisible(true)
+						}} className={c.clickText}>申请退款</div>
+						<div style={{height:14,width:1,background:'#D8D8D8'}}></div>
+						<div onClick={()=>{
+							setOid(record)
+							setVisibleRef(true)
+						}} className={c.clickText}>拒绝退款</div>
+					</Space>
+				)
+		}
+	},
+	];
 
   function format (arr) {
     arr.forEach((item, index) => {
@@ -445,8 +424,9 @@ function OrderView () {
                   </div>
               </div>
             </div>
-            <DropdownComponent loading={actionLoading} selectedRows={selectedRows} submit={submit} keys={[]}/>
+						<ActionComponent selectedRows={selectedRows} setSelectRows={setSelectRows} submit={submit} keys={[]}/>
             <Table
+							scroll={SCROLL}
               columns={columns}
               rowSelection={{
                 ...rowSelection

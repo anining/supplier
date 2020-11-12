@@ -21,7 +21,7 @@
 
 #root .ant-table-small .ant-table-thead > tr > th {
   background-color: #777;
-  height: 54px;
+  height: 48px;
   color: #fff;
   font-weight: 500;
 }
@@ -110,7 +110,12 @@ td.ant-table-column-sort {
 }
 
 .ant-table-row-level-0 .ant-table-cell {
-  height: 63px;
+  height: 50px;
+}
+
+.ant-table.ant-table-small .ant-table-title, .ant-table.ant-table-small .ant-table-footer, .ant-table.ant-table-small .ant-table-thead > tr > th, .ant-table.ant-table-small .ant-table-tbody > tr > td, .ant-table.ant-table-small tfoot > tr > th, .ant-table.ant-table-small tfoot > tr > td {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .ant-table-tbody > tr.ant-table-row:hover > td {

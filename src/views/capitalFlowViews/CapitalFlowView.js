@@ -281,33 +281,33 @@ function RTable () {
     {
       title: '订单编号',
       dataIndex: 'id',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '商品名称',
       dataIndex: 'name',
-      align: 'center',
+			ellipsis: true,
   },
     {
       title: '资金类型',
-      align: 'center',
       dataIndex: 'disc_price',
+			ellipsis: true,
       render: (text, record, index) => {
         return '-'
       }
   },
     {
       title: '订单数额',
-      align: 'center',
       dataIndex: 'disc_price',
+			ellipsis: true,
       render: (text, record, index) => {
         return '-'
       }
   },
     {
       title: '下单时间',
-      align: 'center',
       dataIndex: 'disc_price',
+			ellipsis: true,
       render: (text, record, index) => {
         return '-'
       }
@@ -335,7 +335,6 @@ function RTable () {
             }
               type = "primary"
               size = "small"
-              loading={loading}
               onClick={()=>get(current)}
               className={c.searchBtn}>搜索记录</Button>
             </div>
@@ -343,9 +342,6 @@ function RTable () {
       </div>
       <Table
         columns={columns}
-        rowSelection={{
-          ...rowSelection
-        }}
         dataSource={data}
         size="small"
         pagination={{
