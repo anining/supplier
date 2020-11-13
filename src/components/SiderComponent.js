@@ -57,9 +57,9 @@ function SiderComponent ({ collapsed, toggle }) {
         <Menu.Item key="order-manage" icon={<Icon keys="order-manage" />}>
           订单管理
         </Menu.Item>
-        <Menu.Item key="capital-flow" icon={<Icon keys="capital-flow" />}>
-          资金流水
-        </Menu.Item>
+        {/* <Menu.Item key="capital-flow" icon={<Icon keys="capital-flow" />}> */}
+        {/*   资金流水 */}
+        {/* </Menu.Item> */}
         <Menu.Item key="password" icon={<Icon keys="password" />}>
           修改密码
         </Menu.Item>

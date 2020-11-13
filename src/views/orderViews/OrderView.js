@@ -160,7 +160,6 @@ function OrderView () {
         title: '备注',
         dataIndex: 'comment',
 				ellipsis: true,
-        render: (text, record, index) => <div className={c.noticeHtml}>{text}</div>
   },
       {
         title: '下单信息',
@@ -241,12 +240,16 @@ function OrderView () {
 			title: '订单历程',
 			ellipsis: true,
 			render: (text, record, index) => {
-				return <div onClick={()=>push('/main/order-recording',record)}>查看详情</div>
+				return <div onClick={()=>{
+					message.warning("敬请期待!")
+					// push('/main/order-recording',record)
+				}}>查看</div>
 			}
 	}, 
 		{
 			title: '下单时间',
 			dataIndex: 'time',
+			width: 168,
 			ellipsis: true,
 	}, 
 		{

@@ -106,7 +106,8 @@ function EditGoodsView () {
             <div className={c.itemText}>商品名称</div>
           </div>
           <Input maxLength={40} placeholder="请输入商品名称" onChange={e=>{
-            setName(regexNumber(e.target.value))
+            // setName(regexNumber(e.target.value))
+						setName(e.target.value)
           }} value={name} className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
