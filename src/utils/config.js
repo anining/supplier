@@ -1,5 +1,13 @@
+import {parseDomain} from "./util";
+
 const DEVELOPER = "Production"
-const API_URL = DEVELOPER === "Production" ? "https://test-omnivstore.prismslight.com/supp" : "http://192.168.1.36:8000/supp"
+// const API_URL = DEVELOPER === "Production" ? `${protocol}://${host}/supp` : "https://test-omnivstore.prismslight.com/supp"
+// const API_URL = DEVELOPER === "Production" ? "http://api.panrb168.top/supp" : "https://test-omnivstore.prismslight.com/supp"
+// const API_URL = DEVELOPER === "Test" ? "https://beta-omnivstore.prismslight.com/supp" : "https://test-omnivstore.prismslight.com/supp"
+// const API_URL = DEVELOPER === "Test" ? "https://beta-omnivstore.prismslight.com/supp" : "http://192.168.1.36:8000/supp"
+const LOCAL_URL = 'https://test-omnivstore.prismslight.com/supp';// 本地测试地址
+const HOST = window.location.host.includes('localhost:') ? LOCAL_URL : parseDomain(window.location.host);
+const API_URL = `http://api.${HOST}/supp`;
 const JUMP_DELAY = 500
 const MODULES = {
   toolbar: [
@@ -7,20 +15,20 @@ const MODULES = {
         ['blockquote', 'code-block'],
         ['link', 'image'],
 
-        [{ 'header': 1 }, { 'header': 2 }], // custom button values
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
-        [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
-        [{ 'direction': 'rtl' }], // text direction
+        // [{ 'header': 1 }, { 'header': 2 }], // custom button values
+        // [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        // [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
+        // [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
+        // [{ 'direction': 'rtl' }], // text direction
 
-        [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        // [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
+        // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
-        [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
-        [{ 'font': [] }],
-        [{ 'align': [] }],
+        // [{ 'color': [] }, { 'background': [] }], // dropdown with defaults from theme
+        // [{ 'font': [] }],
+        // [{ 'align': [] }],
 
-        ['clean'] // remove formatting button
+        // ['clean'] // remove formatting button
     ]
 }
 const PERMISSIONS = {

@@ -54,7 +54,7 @@ function LoginView () {
           </div>
           <div className={c.rightView}>
             <div className={c.inputView}>
-              <div className={c.inputTitle}>登录社区</div>
+              <div className={c.inputTitle}>供货商登录</div>
               <div className={c.inputItem}>
                 <div className={c.inputText}>账号</div>
                 <Input size="small" maxLength={20} onChange={e=>onChange(e,1)} value={account} className={c.input} placeholder="请输入登录手机号" prefix={

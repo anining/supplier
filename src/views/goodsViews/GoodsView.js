@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/modal'
+import * as R from 'kefir.ramda'
 import { Badge, Button, Space, Modal, Table, Input } from 'antd'
 import good1 from '../../icons/good/good1.png'
 import c from '../../styles/view.module.css'
@@ -25,29 +26,72 @@ function GoodsView () {
   const [data] = useState([
     {
       label: '供货商品数',
-      number: '10,100',
+      number: '0',
       icon: good3,
       id: 111,
     },
     {
       label: '供货中',
-      number: '10,111',
+      number: '0',
       icon: good1,
       id: 222,
     },
     {
       label: '待供货',
-      number: '10,111',
+      number: '0',
       icon: good2,
       id: 333,
     },
     {
       label: '关闭订单',
-      number: '10,111',
+      number: '0',
       icon: good4,
       id: 444,
     },
   ])
+
+	const sumIf = pred => R.pipe(
+		R.filter(pred),
+		R.map(R.prop("count")),
+		R.sum
+	)
+
+	const getNums = () => {
+		// ordersStat().then(r=>{
+		// 	if(!r.error){
+		// 		const goods_num = sumIf(() => true)(r.data)
+		// 		const pending_num = sumIf(x => x.status === "pending")(r.data)
+		// 		const refunding_num = sumIf(x => x.refund_status === "refunding")(r.data)
+		// 		const failed_num = sumIf(x => x.sync_status === "failed")(r.data)
+		// 		setLabels([
+		// 			{
+		// 				label: '订单总数',
+		// 				number: goods_num,
+		// 				icon: good19,
+		// 				id: 111,
+		// 			},
+		// 			{
+		// 				label: '待处理订单',
+		// 				number: pending_num,
+		// 				icon: good21,
+		// 				id: 222,
+		// 			},
+		// 			{
+		// 				label: '退款中',
+		// 				number: refunding_num,
+		// 				icon: good17,
+		// 				id: 333,
+		// 			},
+		// 			{
+		// 				label: '通信失败',
+		// 				number: failed_num,
+		// 				icon: good59,
+		// 				id: 444,
+		// 			}
+		// 		])
+		// 	}
+		// })
+	}
 
   function handleOk () {
 

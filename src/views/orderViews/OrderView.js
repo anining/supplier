@@ -328,25 +328,25 @@ function OrderView () {
   const [label] = useState([
     {
       label: '订单总数',
-      number: '10,100',
+      number: '0',
       icon: good12,
       id: 111,
     },
     {
       label: '退款中',
-      number: '10,111',
+      number: '0',
       icon: good10,
       id: 222,
     },
     {
       label: '待结算',
-      number: '10,111',
+      number: '0',
       icon: good11,
       id: 333,
     },
     {
       label: '冻结中',
-      number: '10,111',
+      number: '0',
       icon: good13,
       id: 444,
     },

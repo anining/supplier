@@ -76,3 +76,9 @@ export function getStlDetail() {
 export function applyStl() {
     return transformFetch("PUT", `/stl`)
 }
+
+// 获取社区商品统计信息
+export function goodsStat () {
+	return transformFetch("GET", `/cmnt-goods-stat`);
+}
+

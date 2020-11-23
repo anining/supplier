@@ -172,7 +172,7 @@ function UserView() {
                   <div>已申请</div>
                 </div>
               </div>
-              <Button className={c.submitBtn} type="primary" onClick={() => setVisible(true)}>申请结算</Button>
+							<Button disabled={_toFixed(canBeSettled - requested)<=0} className={c.submitBtn} type="primary" onClick={() => setVisible(true)}>申请结算</Button>
             </div>
             <div className={c.balanceTipsView}>
               <div className={c.closeTipsView}>
@@ -185,10 +185,9 @@ function UserView() {
           <div className={c.mainRight}>
             <div className={c.label}>结算二维码</div>
             <div className={c.qrCodeView}>
-              <img
-                src="https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
-                alt="" className={c.qrImg}/>
+              {/* <img src="https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png" alt="" className={c.qrImg}/> */}
               <Upload
+								disabled={true}
                 name="avatar"
                 listType="picture-card"
                 className="avatar-uploader"

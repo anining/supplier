@@ -18,6 +18,27 @@ function saveSuccess(jump = true, path, state) {
   }
 }
 
+function parseDomain (str) {
+    if (!str) return '';
+    if (str.indexOf('://') !== -1) {}
+    str = str.substr(str.indexOf('://') + 3);
+    const topLevel = ['com', 'net', 'org', 'gov', 'edu', 'mil', 'biz', 'name', 'info', 'mobi', 'pro', 'travel', 'museum', 'int', 'areo', 'post', 'rec'];
+    const domains = str.split('.');
+    if (domains.length <= 1) return str;
+    if (!isNaN(domains[domains.length - 1])) return str;
+    let i = 0;
+    // eslint-disable-next-line eqeqeq,no-const-assign
+    while (i < topLevel.length && topLevel[i] !== domains[domains.length - 1]) i++;
+    // eslint-disable-next-line eqeqeq
+    if (i !== topLevel.length) {
+        return domains[domains.length - 2] + '.' + domains[domains.length - 1];
+    } else {
+        i = 0;
+        while (i < topLevel.length && topLevel[i] !== domains[domains.length - 2]) i++;
+        if (i === topLevel.length) return domains[domains.length - 2] + '.' + domains[domains.length - 1]; else return domains[domains.length - 3] + '.' + domains[domains.length - 2] + '.' + domains[domains.length - 1];
+    }
+}
+
 function push(path, state) {
   const history = h.get()
   history.push(path, state)
@@ -120,4 +141,4 @@ function _toFixed(number, num = 2) {
   }
 }
 
-export { _toFixed, getPath, regexNumber, formatMoney, dateFormat, getSimpleText, getKey, saveSuccess, transformTime, goBack, push }
+export { parseDomain, _toFixed, getPath, regexNumber, formatMoney, dateFormat, getSimpleText, getKey, saveSuccess, transformTime, goBack, push }
