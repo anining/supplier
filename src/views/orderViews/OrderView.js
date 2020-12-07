@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/modal'
-import { Badge, Button, Popconfirm, Space, DatePicker, Modal, Table, Input, message } from 'antd'
+import { Badge, Button, Popconfirm, Space, DatePicker, Modal, Input, message } from 'antd'
 import good10 from '../../icons/good/good10.png'
 import c from '../../styles/view.module.css'
 import good11 from '../../icons/good/good11.png'
@@ -9,11 +9,12 @@ import good13 from '../../icons/good/good13.png'
 import good9 from '../../icons/good/good9.png'
 import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
-import { push, getKey, saveSuccess, dateFormat } from "../../utils/util"
+import { push, getKey, saveSuccess, dateFormat, regexNumber } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
 import { orders, updateOrders, refundReject, refundAccept } from "../../utils/api"
 import { REFUND_STATUS, ORDER_STATUS, SCROLL } from "../../utils/config"
 import ActionComponent from '../../components/ActionComponent'
+import Table from '../../components/Table.jsx'
 
 function OrderView () {
   const [visible, setVisible] = useState(false)
@@ -26,7 +27,7 @@ function OrderView () {
   const [oid, setOid] = useState({})
   const [data, setData] = useState([])
   const [current, setCurrent] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(0)
   const [date, setDate] = useState([])
   const [moment, setMoment] = useState()
@@ -62,40 +63,28 @@ function OrderView () {
   }
 
   useEffect(() => {
-    get(current)
-  }, [])
+    get()
+  }, [pageSize, current])
 
   function dateChange (data, dataString) {
     setDate([new Date(dataString[0]).toISOString(), new Date(dataString[1]).toISOString()])
     setMoment(data)
   }
 
-  function onChange (page, pageSize) {
-    setCurrent(page)
-    get(page)
-  }
-
-  const rowSelection = {
-    onChange: (selectedRowKeys, rows) => {
-      setSelectRows(selectedRowKeys)
-    },
-    selectedRowKeys: selectedRows
-  };
-
   function submit (key) {
-    setActionLoading(true)
-    const params = new URLSearchParams()
-    selectedRows.forEach(i => params.append("ids", data[i].id))
-    orders("modifys", undefined, params.toString(), { status: key }).then(r => {
-      setActionLoading(false)
-      if (!r.error) {
-        saveSuccess(false)
-        setSelectRows([])
-        get(current)
-      }
-    }).catch(() => {
-      setActionLoading(false)
-    })
+    // setActionLoading(true)
+    // const params = new URLSearchParams()
+    // selectedRows.forEach(i => params.append("ids", data[i].id))
+    // orders("modifys", undefined, params.toString(), { status: key }).then(r => {
+    //   setActionLoading(false)
+    //   if (!r.error) {
+    //     saveSuccess(false)
+    //     setSelectRows([])
+    //     get(current)
+    //   }
+    // }).catch(() => {
+    //   setActionLoading(false)
+    // })
   }
 
   function reset () {
@@ -248,7 +237,7 @@ function OrderView () {
 	}, 
 		{
 			title: '下单时间',
-			dataIndex: 'time',
+			dataIndex: 'created_at',
 			width: 168,
 			ellipsis: true,
 	}, 
@@ -290,18 +279,18 @@ function OrderView () {
     arr.forEach((item, index) => {
       item.key = index
       item.comment = item.comment || '-'
-      item.time = dateFormat(item.created_at, "yyyy-MM-dd HH:mm:ss")
+      item.created_at = dateFormat(item.created_at, "yyyy-MM-dd HH:mm:ss")
     })
     return arr
   }
 
-  function get (current) {
-    let body = { page: current, size: pageSize }
+  function get (page = current) {
+    let body = { page, size: pageSize }
     if (order_id) {
-      body = { ...body, ...{ order_id } }
+      body = { ...body, ...{ id: order_id } }
     }
     if (goods_name) {
-      body = { ...body, ...{ goods_name } }
+      body = { ...body, ...{ supplier_supp_goods__name__foreign_key: goods_name } }
     }
     if (status) {
       body = { ...body, ...{ status } }
@@ -328,25 +317,25 @@ function OrderView () {
   const [label] = useState([
     {
       label: '订单总数',
-      number: '0',
+      number: '-',
       icon: good12,
       id: 111,
     },
     {
       label: '退款中',
-      number: '0',
+      number: '-',
       icon: good10,
       id: 222,
     },
     {
       label: '待结算',
-      number: '0',
+      number: '-',
       icon: good11,
       id: 333,
     },
     {
       label: '冻结中',
-      number: '0',
+      number: '-',
       icon: good13,
       id: 444,
     },
@@ -403,8 +392,14 @@ function OrderView () {
             <div className={c.searchView}>
               <div className={c.search}>
                 <div className={c.searchL}>
-                  <Input value={order_id} onPressEnter={()=>get(current)} onChange={e=>setOrder_id(e.target.value)} placeholder="请输入订单编号" size="small" className={c.searchInput}/>
-                  <Input value={goods_name} onPressEnter={()=>get(current)} onChange={e=>setGoods_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
+                  <Input value={order_id} onPressEnter={()=> {
+                    setCurrent(1)
+                    get(1)
+                  }} onChange={e=>setOrder_id(regexNumber(e.target.value))} placeholder="请输入订单编号" size="small" className={c.searchInput}/>
+                  <Input value={goods_name} onPressEnter={()=> {
+                    setCurrent(1)
+                    get(1)
+                  }} onChange={e=>setGoods_name(e.target.value)} placeholder="请输入商品名称" size="small" className={c.searchInput}/>
                   <DropdownComponent action={status} setAction={setStatus} keys={[{name:"待处理",key:"pending"},{name:"进行中",key:"processing"},{name:"已完成",key:"completed"},{name:"已终止",key:"closed"}]} placeholder="请选择订单状态" style={{width:186}}/>
                   <DropdownComponent action={refund_status} setAction={setRefund_status} keys={[{name:"退款中",key:"refunding"},{name:"已退款",key:"refunded"},{name:"已拒绝",key:"rejected"}]} placeholder="请选择售后状态" style={{width:186}}/>
                   {/* <DropdownComponent action={status} setAction={setStatus} keys={[{name:"已上架",key:"available"},{name:"已关闭订单",key:"unavailable"},{name:"已下架",key:"paused"}]} placeholder="请选择结算状态" style={{width:186}}/> */}
@@ -421,29 +416,26 @@ function OrderView () {
                   }
                     type = "primary"
                     size = "small"
-                    loading={loading}
-                    onClick={()=>get(current)}
+                    onClick={()=> {
+                      setCurrent(1)
+                      get(1)
+                    }}
                     className={c.searchBtn}>搜索</Button>
                   </div>
               </div>
             </div>
-						<ActionComponent selectedRows={selectedRows} setSelectRows={setSelectRows} submit={submit} keys={[]}/>
+						{/* <ActionComponent selectedRows={selectedRows} setSelectRows={setSelectRows} submit={submit} keys={[]}/> */}
             <Table
-							scroll={SCROLL}
+              setPageSize={setPageSize}
+              setCurrent={setCurrent}
+              setSelectedRowKeys={setSelectRows}
+              selectedRowKeys={selectedRows}
               columns={columns}
-              rowSelection={{
-                ...rowSelection
-              }}
               dataSource={data}
-              size="small"
-              pagination={{
-                showQuickJumper:true,
-                current,
-                pageSize,
-                showLessItems:true,
-                total,
-                onChange
-              }}
+              pageSize={pageSize}
+              total={total}
+              current={current}
+              loading={loading}
             />
           </div>
       </div>

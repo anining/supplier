@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import c from '../../styles/edit.module.css'
 import { Input, Button, message, Breadcrumb, Table } from 'antd'
 import good5 from '../../icons/good/good5.png'
+import { storage } from '../../utils/storage'
 import good8 from '../../icons/good/good8.png'
 import { paramTemplates } from "../../utils/api"
 import { saveSuccess, goBack, push } from "../../utils/util"
@@ -31,8 +32,11 @@ function EditOrderModelView () {
       message.warning("请完善信息")
       return
     }
+		const supplier_id = storage.getItem("supplier_id")
     setLoading(true)
-    paramTemplates(id ? 'modify' : 'add', id, undefined, { name, weight: weight || 1, params:JSON.stringify(params) }).then(r => {
+    const body = {name, supplier_id, weight: weight || 1, params: JSON.stringify(params)}
+    id && delete body.supplier_id
+    paramTemplates(id ? 'modify' : 'add', id, undefined, body).then(r => {
       setLoading(false)
       if (!jump) {
         h.replace('/main/edit-order-model')
@@ -64,9 +68,9 @@ function EditOrderModelView () {
   },
   ]
   const dataSource = [
-    { type: 'text', introduction: "允许输入任意文字类型内容" },
-    { type: 'number', introduction: "只允许输入数字类型内容" },
-    { type: 'url', introduction: "验证输入框内的内容必须包含至少一条链接" },
+    { type: 'text', key: 1, introduction: "允许输入任意文字类型内容" },
+    { type: 'number', key: 2, introduction: "只允许输入数字类型内容" },
+    { type: 'url', key: 3, introduction: "验证输入框内的内容必须包含至少一条链接" },
   ]
 
   return (

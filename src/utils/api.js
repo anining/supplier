@@ -1,26 +1,27 @@
+import {customizeFetch} from './customizeFetch'
 import {transformFetch} from './request'
 
 // 供货商登录
 export function login(account, password) {
-    return transformFetch("POST", "/login", {account, password})
+    return customizeFetch("POST", "/rpc/supplier_login", {account, password})
 }
 
 // 修改密码
 export function password(old_password, new_password) {
-    return transformFetch("PUT", "/password", {old_password, new_password})
+    return customizeFetch("POST", "/rpc/supplier_update_password", {old_password, new_password})
 }
 
 // 下单模型
 export function paramTemplates(type, pid, table, body) {
     switch (type) {
         case "get":
-            return transformFetch("GET", "/ptpls", table)
+            return customizeFetch("GET", "/supplier_verbose_supp_ptpls", table)
         case "add":
-            return transformFetch("POST", "/ptpls", body)
+            return customizeFetch("POST", "/supplier_supp_ptpls", body)
         case "modify":
-            return transformFetch("PATCH", `/ptpls/${pid}`, body)
+            return customizeFetch("PATCH", "/supplier_supp_ptpls", body, pid)
         default:
-        // return transformFetch("DELETE", `/ptpls?${body}`)
+            return customizeFetch("DELETE", "/supplier_supp_ptpls", body)
     }
 }
 
@@ -28,13 +29,13 @@ export function paramTemplates(type, pid, table, body) {
 export function goods(type, gid, table, body) {
     switch (type) {
         case "get":
-            return transformFetch("GET", "/goods", table)
+            return customizeFetch("GET", "/supplier_verbose_supp_goods", table)
         case "add":
-            return transformFetch("POST", "/goods", body);
-        // case "modify":
-        //   return transformFetch("PATCH", `/community-goods-categories/${gid}`, body);
+            return customizeFetch("POST", "/supplier_supp_goods", body);
+        case "modify":
+            return customizeFetch("PATCH", "/supplier_supp_goods", body, gid);
         default:
-        // return transformFetch("DELETE", `/goods/${gid}`);
+            return customizeFetch("DELETE", "/supplier_supp_goods", body);
     }
 }
 
@@ -42,43 +43,42 @@ export function goods(type, gid, table, body) {
 export function orders(type, oid, table, body) {
     switch (type) {
         case "get":
-            return transformFetch("GET", "/orders", table)
+            return customizeFetch("GET", "/supplier_supp_orders", table)
         case "modify":
-            return transformFetch("PATCH", `/orders/${oid}`, body);
-        case "modifys":
-            return transformFetch("PATCH", `/orders?${table}`, body);
+            return customizeFetch("PATCH", "/supplier_supp_orders", body, oid)
         default:
-        //   return transformFetch("DELETE", `/community-goods-categories/${gid}`);
+            return customizeFetch("DELETE", "/supplier_supp_orders", body)
     }
-}
-
-//订单拒绝退款
-export function refundReject (id,reason) {
-  return transformFetch("PUT", `/orders/${id}/refund/reject`, {reason})
-}
-
-// 更新订单
-export function updateOrders(oid, body) {
-    return transformFetch("PATCH", `/orders/${oid}`, body)
-}
-
-//订单同意退款
-export function refundAccept (id,amount) {
-  return transformFetch("PUT", `/orders/${id}/refund/accept`, {amount})
 }
 
 // 获取结算明细
 export function getStlDetail() {
-    return transformFetch("GET", `/stl`)
+    return customizeFetch("GET", "/rpc/supplier_stl", {}, undefined, false)
 }
 
 // 申请结算
 export function applyStl() {
-    return transformFetch("PUT", `/stl`)
+    return customizeFetch("POST", "/rpc/supplier_req_stl")
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+//订单拒绝退款
+export function refundReject (id,reason) {
+  return transformFetch("PUT", "/rpc/supplier_reject_refund", {reason})
+}
+
+// 更新订单
+export function updateOrders(oid, body) {
+    return transformFetch("PATCH", "/rpc/supplier_update_order", body)
+}
+
+//订单同意退款
+export function refundAccept (id,amount) {
+  return transformFetch("PUT", "/rpc/supplier_accept_refund", {amount})
 }
 
 // 获取社区商品统计信息
 export function goodsStat () {
 	return transformFetch("GET", `/cmnt-goods-stat`);
 }
-

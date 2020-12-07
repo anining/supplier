@@ -5,9 +5,10 @@ const DEVELOPER = "Production"
 // const API_URL = DEVELOPER === "Production" ? "http://api.panrb168.top/supp" : "https://test-omnivstore.prismslight.com/supp"
 // const API_URL = DEVELOPER === "Test" ? "https://beta-omnivstore.prismslight.com/supp" : "https://test-omnivstore.prismslight.com/supp"
 // const API_URL = DEVELOPER === "Test" ? "https://beta-omnivstore.prismslight.com/supp" : "http://192.168.1.36:8000/supp"
-const LOCAL_URL = 'https://test-omnivstore.prismslight.com/supp';// 本地测试地址
-const HOST = window.location.host.includes('localhost:') ? LOCAL_URL : parseDomain(window.location.host);
-const API_URL = `http://api.${HOST}/supp`;
+// const LOCAL_URL = 'https://test-omnivstore.prismslight.com/supp';// 本地测试地址
+// const HOST = window.location.host.includes('localhost:') ? LOCAL_URL : parseDomain(window.location.host);
+// const API_URL = `http://api.${HOST}/supp`;
+const API_URL = "http://192.168.1.36:3000";
 const JUMP_DELAY = 500
 const MODULES = {
   toolbar: [
@@ -94,5 +95,10 @@ const PLACE_ORDER_STATUS = {
 		text: '暂停下单',
 	}
 }
+const CONTACTS = {
+  "goods": "https://easydoc.xyz/s/85631950/b7F85hU0/rYdfh1bo",
+  "order-model": "https://easydoc.xyz/s/85631950/b7F85hU0/WnnMKxt4",
+  "order-manage": "https://easydoc.xyz/s/85631950/b7F85hU0/9vcOyNU6"
+}
 const SCROLL = {x:"120%"}
-export { PLACE_ORDER_STATUS, SCROLL, REFUND_STATUS, API_URL,ORDER_STATUS, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }
+export { CONTACTS, PLACE_ORDER_STATUS, SCROLL, REFUND_STATUS, API_URL,ORDER_STATUS, PERMISSIONS, DEVELOPER, JUMP_DELAY, MODULES }

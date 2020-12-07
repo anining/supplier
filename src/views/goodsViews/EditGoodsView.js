@@ -1,60 +1,51 @@
 import React, { useState } from 'react'
 import c from '../../styles/edit.module.css'
 import { Input, InputNumber, Button, Radio, Breadcrumb, message } from 'antd'
-import ReactQuill from 'react-quill';
 import good5 from '../../icons/good/good5.png'
 import { goBack, saveSuccess, push, regexNumber } from "../../utils/util";
-import { goods } from "../../utils/api";
+import { goods, paramTemplates } from "../../utils/api";
+import { storage } from "../../utils/storage"
+import Quill from "../../components/Quill"
 import { useHistory } from "react-router-dom";
-import { MODULES } from "../../utils/config";
-
-let win
+import SearchInput from "../../components/SearchInput"
 
 function EditGoodsView () {
   const { state = {} } = useHistory().location
-  const { id, intro: i = "", max_order_amount: max_o_a, min_order_amount: min_o_a, name: n="", providing, refund_type, refund_period, status: s = "available", unit: u, price: u_p } = state
+  const { id, intro: i = "", ptpl_id, max_order_amount: max_o_a, min_order_amount: min_o_a, name: n="", providing, refund_type, refund_period, status: s = "available", unit: u, price: u_p } = state
   const h = useHistory()
   const [name, setName] = useState(n)
   const [value, setValue] = useState(refund_period)
   const [unit_price, setUnit_price] = useState(u_p)
   const [unit, setUnit] = useState(u)
   const [status, setStatus] = useState(s)
-  const [provider_param_template_id, setProvider_param_template_id] = useState()
-  const [provider_param_template_name, setProvider_param_template_name] = useState()
+  const [provider_param_template_id, setProvider_param_template_id] = useState(ptpl_id)
   const [loading, setLoading] = useState(false)
   const [refund_method, setRefund_method] = useState(refund_type)
   const [min_order_amount, setMin_order_amount] = useState(min_o_a)
   const [max_order_amount, setMax_order_amount] = useState(max_o_a)
   const [introduction, setIntroduction] = useState(i)
 
-  window.localClick = function (type, ids) {
-    switch (type) {
-      case 'provider_param_template_id':
-        setProvider_param_template_id(ids.id)
-        setProvider_param_template_name(ids.name)
-        break
-      default:
-        ;
-    }
-    win && win.close()
-  }
-
   function save (jump) {
     if (!name || !provider_param_template_id || !introduction || !unit_price || !unit) {
       message.warning("请完善信息")
       return
     }
+		const supplier_id = storage.getItem("supplier_id")
     let body = {
       name,
       unit,
       status,
       ptpl_id: provider_param_template_id,
       intro: introduction,
-      refund_method: refund_method ? { refund_type: refund_method, refund_period: value*24*3600 } : refund_method,
       min_order_amount: min_order_amount || 1,
       max_order_amount: max_order_amount || 100000,
       price: unit_price,
+      supplier_id
     }
+    if (refund_method) {
+      body = {...body, ...{ refund_type: refund_method, refund_period: value*24*3600 }}
+    }
+    id && delete body.supplier_id
     setLoading(true)
     const promise = goods(id ? "modify" : 'add', id, undefined, body)
     promise.then(r => {
@@ -69,7 +60,6 @@ function EditGoodsView () {
         setUnit(undefined)
         setUnit_price(undefined)
         setStatus("available")
-        setProvider_param_template_name(undefined)
         setProvider_param_template_id(undefined)
         setRefund_method(undefined)
         setMax_order_amount(undefined)
@@ -82,6 +72,17 @@ function EditGoodsView () {
       }
       setLoading(false)
     })
+  }
+
+  function getParamTemplates (page, size, name) {
+    const body = {page, size, name}
+    !name && delete body.name
+    return paramTemplates("get", undefined, body).then(r => {
+      if (!r.error) {
+        return r.data
+      }
+      return []
+    }).catch(()=>[])
   }
 
   return (
@@ -105,17 +106,14 @@ function EditGoodsView () {
             <span>*</span>
             <div className={c.itemText}>商品名称</div>
           </div>
-          <Input maxLength={40} placeholder="请输入商品名称" onChange={e=>{
-            // setName(regexNumber(e.target.value))
-						setName(e.target.value)
-          }} value={name} className={c.itemInput}></Input>
+          <Input maxLength={40} placeholder="请输入商品名称" onChange={e=>setName(e.target.value)} value={name} className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>
             <span>*</span>
             <div className={c.itemText}>商品单价</div>
           </div>
-          <Input placeholder="请输入商品单价" onChange={e=>setUnit_price(e.target.value)} value={unit_price} className={c.itemInput}></Input>
+          <Input placeholder="请输入商品单价" onChange={e=>setUnit_price(regexNumber(e.target.value, true))} value={unit_price} className={c.itemInput}></Input>
         </div>
         <div className={c.item}>
           <div className={c.itemName}>
@@ -129,12 +127,7 @@ function EditGoodsView () {
             <span>*</span>
             <div className={c.itemText}>下单模型</div>
           </div>
-            <div onClick={()=>{
-               win = window.open("/select-order-model", "_blank", "left=390,top=145,width=1200,height=700")
-            }} className={c.itemSelect}>
-              <div className={c.itemSelectP} style={{color:provider_param_template_name?"rgba(0, 0, 0, 0.85)":"rgba(0,0,0,0.25)"}}>{provider_param_template_name?provider_param_template_name:'请设置下单模型'}</div>
-              <div>选择</div>
-            </div>
+            <SearchInput placeholder="请选择下单模型" fetchName={getParamTemplates} value={provider_param_template_id} setValue={setProvider_param_template_id}/>
             <Button type="primary" className={c.itemBtn} onClick={()=>{
               push('/main/edit-order-model')
             }}>新增模型</Button>
@@ -186,7 +179,7 @@ function EditGoodsView () {
             <span>*</span>
             <div className={c.itemText}>商品说明</div>
           </div>
-          <ReactQuill modules={MODULES} className={c.quill} theme="snow" value={introduction} onChange={e=>setIntroduction(e)}/>
+					<Quill value={introduction} setValue={setIntroduction} />
         </div>
         <div className={c.item} style={{marginTop:80}}>
           <div className={c.itemName} />

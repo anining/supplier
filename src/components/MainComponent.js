@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import HeaderComponent from './HeaderComponent'
 import SiderComponent from './SiderComponent'
 import ContentComponent from './ContentComponent'
+import Contact from './Contact'
 
 function MainComponent () {
   const [collapsed, setCollapsed] = useState(false)
@@ -13,6 +14,7 @@ function MainComponent () {
       <HeaderComponent collapsed={collapsed}/>
       <Layout>
         <ContentComponent />
+        <Contact />
       </Layout>
     </Layout>
   );

@@ -19,7 +19,7 @@ function UserView() {
 
   function getDetail () {
     getStlDetail().then(r=>{
-      !r.error && setStlData(r.data)
+      !r.error && setStlData(r.data[0])
     })
   }
 
@@ -34,7 +34,7 @@ function UserView() {
         saveSuccess(false)
         getDetail()
       }
-    });
+    })
   }
 
   function getBase64 (img, callback) {
@@ -67,7 +67,7 @@ function UserView() {
     //     const ret = await getStlDetail();
     //     if (ret && ret.data) {
     //       // console.log(ret, '==');
-    //       setStlData(ret.data);
+    //       setStlData(ret.data[0]);
     //     }
     //   } catch (e) {
     //     console.log(e)
@@ -132,23 +132,23 @@ function UserView() {
           <div className={c.headerL}>
             <img src={header1} alt=""/>
             <div>
-              <div className={c.tips}>欢迎您，想喝冰阔泺，祝您开心每一天！</div>
-              <div className={c.msg}>上次登录时间：<span>2021.01.01 01:15:23</span></div>
-              <div className={c.msg}>上次登录地点：<span>127.0.0.1(重庆市 重庆)</span></div>
+              <div className={c.tips}>欢迎您，-，祝您开心每一天！</div>
+              <div className={c.msg}>上次登录时间：<span>-</span></div>
+              <div className={c.msg}>上次登录地点：<span>-</span></div>
             </div>
           </div>
           <div className={c.headerR}>
             <div className={c.headerSec}>
               <div>供应商ID：</div>
-              <div className={c.id}>12345</div>
+              <div className={c.id}>-</div>
             </div>
             <div className={c.headerSec}>
               <div>供应商密钥：</div>
-              <Button type="primary" className={c.btn}>复制密钥</Button>
+              <Button type="primary" disabled={true} className={c.btn}>复制密钥</Button>
             </div>
             <div className={c.headerSec}>
               <div>API文档：</div>
-              <Button type="primary" className={c.btn}>查看文档</Button>
+              <Button type="primary" disabled={true} className={c.btn}>查看文档</Button>
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@ function UserView() {
           <div className={c.label}>供货状态</div>
           <div className={c.statusView}>
             <div>供货状态:</div>
-            <Switch className={c.switch} onChange={onChange}/>
+            <Switch className={c.switch} disabled={true} onChange={onChange}/>
             <div>当前状态：</div>
             <div>正常供货</div>
           </div>

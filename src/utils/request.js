@@ -6,6 +6,7 @@ import { push } from './util';
 const ERROR_MSG = {
   "incorrect_user_or_password": "账号或者密码错误",
   "tag_exists": "重复的标签名称",
+  "invalid_token": "登录过期",
   "token_expired": "登录过期",
   "repeated_request": "重复提交",
   "incorrect_old_password":"原密码错误"
@@ -48,7 +49,7 @@ async function transformFetch (method, url, data = {}) {
             } else {
               message.error(localDate.msg || error || "请求错误")
             }
-            if (error === "token_expired") {
+            if (error === "token_expired" || error === "invalid_token") {
               push('/login')
             }
           }

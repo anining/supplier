@@ -11,7 +11,7 @@ import auth12 from '../../icons/auth/auth12.png'
 import DropdownComponent from "../../components/DropdownComponent";
 import { push, saveSuccess } from "../../utils/util"
 import TableHeaderComponent from "../../components/TableHeaderComponent"
-// import { communityGoods } from "../../utils/api"
+import TableComponent from '../../components/TableComponent.jsx'
 
 let win
 
@@ -129,7 +129,7 @@ function RTable () {
   const [selectedRows, setSelectRows] = useState([]);
   const [data, setData] = useState([])
   const [current, setCurrent] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(0)
   const [date, setDate] = useState([])
   const [moment, setMoment] = useState()
@@ -340,18 +340,18 @@ function RTable () {
             </div>
         </div>
       </div>
-      <Table
+      <TableComponent
+        setPageSize={setPageSize}
+        setCurrent={setCurrent}
+        getDataSource={get}
+        setSelectedRowKeys={setSelectRows}
+        selectedRowKeys={selectedRows}
         columns={columns}
         dataSource={data}
-        size="small"
-        pagination={{
-          showQuickJumper:true,
-          current,
-          pageSize,
-          showLessItems:true,
-          total,
-          onChange
-        }}
+        pageSize={pageSize}
+        total={total}
+        current={current}
+        loading={loading}
       />
     </div>
   )

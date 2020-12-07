@@ -7,6 +7,7 @@ import auth4 from '../../icons/auth/auth4.png'
 import { login } from '../../utils/api'
 import { setter } from '../../utils/store'
 import { push } from "../../utils/util";
+import jwt_decode from 'jwt-decode'
 
 function LoginView () {
   const [account, setAccount] = useState()
@@ -37,12 +38,11 @@ function LoginView () {
       const { error, data } = r;
       if (!error) {
         const { access_token } = data;
-        setter([['authorization', `Bearer ${access_token}`]], true);
+				const {exp, supplier_id, role} = jwt_decode(access_token);
+        setter([['authorization', `Bearer ${access_token}`], ['role', role], ['supplier_id', supplier_id]], true);
         push('/main')
       }
-    }).catch(e => {
-      setLoading(false)
-    })
+    }).catch(() => setLoading(false))
   }
 
   return (

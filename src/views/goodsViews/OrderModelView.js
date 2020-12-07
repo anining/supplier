@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, Table, Input } from 'antd'
+import { Button, Modal, Input } from 'antd'
 import c from '../../styles/view.module.css'
 import good7 from '../../icons/good/good7.png'
 import good31 from '../../icons/good/good31.png'
@@ -9,6 +9,7 @@ import DropdownComponent from '../../components/DropdownComponent'
 import { push, transformTime, saveSuccess } from "../../utils/util";
 import styles from "../../styles/modal"
 import ActionComponent from '../../components/ActionComponent'
+import Table from '../../components/Table.jsx'
 
 function OrderModelView () {
   const [visible, setVisible] = useState(false)
@@ -67,23 +68,29 @@ function RTable () {
   const [selectedRows, setSelectRows] = useState([]);
   const [data, setData] = useState([])
   const [current, setCurrent] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(10)
   const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
   const [search_name, setSearch_name] = useState()
 
   useEffect(() => {
-    get(current)
-  }, [])
+    get()
+  }, [pageSize, current])
 
-  function get (current) {
-    let body = { page: current, size: pageSize }
+  function get (page = current) {
+    setLoading(true)
+    let body = {page ,size: pageSize}
+    if (search_name) {
+      body = {...body, ...{name: search_name}}
+    }
     paramTemplates("get", undefined, body).then(r => {
+      setLoading(false)
       if (!r.error) {
         const { data, total } = r
         setTotal(total)
         setData(format(data))
       }
-    })
+    }).catch(() => setLoading(false))
   }
 
   function format (arr) {
@@ -92,11 +99,6 @@ function RTable () {
       item.time = transformTime(item.created_at)
     })
     return arr
-  }
-
-  function onChange (page, pageSize) {
-    setCurrent(page)
-    get(page)
   }
 
   const columns = [
@@ -122,30 +124,22 @@ function RTable () {
   },
     {
       title: '操作',
-      render: (text, record, index) => <div className={c.clickText} onClick={()=>push('/main/edit-order-model',record)}>编辑模型</div>
-    },
+      render: (...args) => <div className={c.clickText} onClick={()=>push('/main/edit-order-model', args[1])}>编辑模型</div>
+    }
   ];
-
-  const rowSelection = {
-    onChange: (selectedRowKeys, rows) => {
-      setSelectRows(selectedRowKeys)
-    },
-    selectedRowKeys: selectedRows
-  };
 
   function submit (key) {
     switch (key) {
       case "delete":
-        paramTemplates("delete", undefined, undefined, "ids=" + selectedRows.map(i => data[i].id).toString()).then(r => {
+        paramTemplates("delete", undefined, undefined, selectedRows.map(i => data[i].id).toString()).then(r => {
           if (!r.error) {
             saveSuccess(false)
             setSelectRows([])
-            get(current)
+            get(1)
           }
         })
         break
       default:
-        ;
     }
   }
 
@@ -154,43 +148,43 @@ function RTable () {
       <div className={c.searchView}>
           <div className={c.search}>
             <div className={c.searchL}>
-              {/* <Input value={search_name} onPressEnter={()=>get(current)} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入分类名称" size="small" className={c.searchInput}/> */}
-              {/* { */}
-              {/* <Button icon={ */}
-              {/*   <img src={good31} alt="" style={{width:14,marginRight:6}} /> */}
-              {/* } */}
-              {/*   size = "small" */}
-              {/*   onClick={()=>get(current)} */}
-              {/*   className={c.searchBtn}>搜索模型</Button> */}
-              {/* } */}
+              <Input value={search_name} onPressEnter={()=> {
+                setCurrent(1)
+                get(1)
+              }} onChange={e=>setSearch_name(e.target.value)} placeholder="请输入模型名称" size="small" className={c.searchInput}/>
+              {
+              <Button 
+                icon={<img src={good31} alt="" style={{width:14, marginRight:6}} />}
+                size="small"
+                onClick={() => {
+                  setCurrent(1)
+                  get(1)
+                }}
+                className={c.searchBtn}>搜索模型</Button>
+              }
             </div>
             <div className={c.searchR}>
-              <Button icon={
-                <img src={good7} alt="" style={{width:16,marginRight:6}} />
-              }
-                type = "primary"
-                size = "small"
+              <Button
+                icon={<img src={good7} alt="" style={{width:16,marginRight:6}} />}
+                type="primary"
+                size="small"
                 onClick={()=>push('/main/edit-order-model')}
                 className={c.searchBtn}>新增模型</Button>
             </div>
           </div>
       </div>
-			<ActionComponent selectedRows={selectedRows} setSelectRows={setSelectRows} submit={submit} keys={[]}/>
+			<ActionComponent selectedRows={selectedRows} setSelectRows={setSelectRows} submit={submit} keys={[{name:"批量删除",key:"delete"}]}/>
       <Table
+        setPageSize={setPageSize}
+        setCurrent={setCurrent}
+        setSelectedRowKeys={setSelectRows}
+        selectedRowKeys={selectedRows}
         columns={columns}
-        rowSelection={{
-          ...rowSelection
-        }}
         dataSource={data}
-        size="small"
-        pagination={{
-          showQuickJumper:true,
-          current,
-          pageSize,
-          showLessItems:true,
-          total,
-          onChange
-        }}
+        pageSize={pageSize}
+        total={total}
+        current={current}
+        loading={loading}
       />
     </div>
   )

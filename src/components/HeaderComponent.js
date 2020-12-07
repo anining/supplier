@@ -1,5 +1,5 @@
 import * as React from 'karet'
-import { Menu, Dropdown, Button } from 'antd'
+import { Menu, Dropdown, Button, message } from 'antd'
 import c from '../styles/header.module.css'
 import { Layout } from 'antd'
 import header1 from '../icons/header/header1.png'
@@ -28,10 +28,12 @@ function HeaderComponent ({ toggle }) {
       <div className={c.containerRight}>
         <div className={c.containerR}>
           <div style={{marginRight:24,cursor:'pointer'}} onClick={()=>{
-            window.open("https://www.baidu.com")
+            message.info("敬请期待")
+            // window.open("https://www.baidu.com")
           }}>帮助中心</div>
           <div style={{cursor:'pointer'}} onClick={()=>{
-            window.open("https://www.baidu.com")
+            message.info("敬请期待")
+            // window.open("https://www.baidu.com")
           }}>开放平台</div>
           <Dropdown overlay={menu}>
             <Button className={c.btn}>
